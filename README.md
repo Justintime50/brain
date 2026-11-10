@@ -1,40 +1,66 @@
 # How Justin built a bot team
+
 The brAIn for my bot team.
 
-A guide to recreating a multi-bot Grok Bot setup on a personal account: one coordinator bot you talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers. It covers the team shape, ready-to-paste bot descriptions, the rules that keep the bots safe and quiet, the shared skills and routines worth copying, and a step-by-step setup.
+Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables compared with the 12 weeks before, without sacrificing quality. In my first three weeks with the team, I opened about 3x as many pull requests per week (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against only the 4 weeks before, the gain is smaller: 62% more PRs opened, 42% more merged and 72% more commits. Quality held up. The median time from opening a PR to merging it fell from 1.8 to 1.2 hours, and bots never merge, so every PR still goes through my review. The numbers, how they were measured and their caveats are in [Results](#results).
 
-Nothing here is tied to one employer. Wherever the original setup pointed at a company system, this guide uses a placeholder such as "your company's docs repo" or "your dev VM".
+The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, a notes-vault writer and an accomplishments log.
 
-## How to update this
+This README does three jobs at once:
 
-This file is meant to grow. Justin and any AI agent, including bots on his work and personal Grok Bot accounts and other agents, can add findings here as they discover them. When you do:
+- **The story** of what the team changed, how it evolved and what I learned: [Results](#results) and [How the team evolved](#how-the-team-evolved).
+- **Technical instructions** anyone can follow to build their own: [Step-by-step setup](#step-by-step-setup), [Connectors to set up](#connectors-to-set-up) and [Machines](#machines).
+- **A backup and the current state of my team,** enough to recreate it: every bot's ready-to-paste description, the rules, the shared skills and the routines with their full prompts, from [Team structure](#team-structure) through [Routines worth copying](#routines-worth-copying), plus the per-account details in [Account-specific setup](#account-specific-setup).
 
-- Keep the body generic, so it works for any account.
-- Put account-specific setup only in [Account-specific setup](#account-specific-setup).
-- Never add internal hostnames, company or product internals, people, tickets, ids, tokens or credential locations.
-- Update existing text in place instead of appending duplicates.
-- Keep code style out of this file. It belongs in the styles repo (see [Code style](#code-style)).
-- Keep the [contents](#contents) list in sync with the H2 sections.
-- Commit with Conventional Commits, with Justin as author and committer, and no trailers.
+Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [How to update this](#how-to-update-this).
 
 ## Contents
 
-- [How to update this](#how-to-update-this)
-- [How the team evolved](#how-the-team-evolved)
-- [Team structure](#team-structure)
-- [Bot profiles](#bot-profiles)
-- [Handoff and reporting rules](#handoff-and-reporting-rules)
-- [Verify and cite](#verify-and-cite)
-- [When to use Adversarial Reviewer](#when-to-use-adversarial-reviewer)
-- [Git, PR and commit conventions](#git-pr-and-commit-conventions)
-- [Code style](#code-style)
-- [Other standing rules](#other-standing-rules)
-- [Shared skills worth copying](#shared-skills-worth-copying)
-- [Routines worth copying](#routines-worth-copying)
-- [Connectors to set up](#connectors-to-set-up)
-- [Machines](#machines)
-- [Step-by-step setup](#step-by-step-setup)
-- [Account-specific setup](#account-specific-setup)
+- **The story**
+  - [Results](#results)
+  - [How the team evolved](#how-the-team-evolved)
+- **Build your own**
+  - [Step-by-step setup](#step-by-step-setup)
+  - [Connectors to set up](#connectors-to-set-up)
+  - [Machines](#machines)
+- **The current team (reference and backup)**
+  - [Team structure](#team-structure)
+  - [Bot profiles](#bot-profiles)
+  - [Handoff and reporting rules](#handoff-and-reporting-rules)
+  - [Verify and cite](#verify-and-cite)
+  - [When to use Adversarial Reviewer](#when-to-use-adversarial-reviewer)
+  - [Git, PR and commit conventions](#git-pr-and-commit-conventions)
+  - [Code style](#code-style)
+  - [Other standing rules](#other-standing-rules)
+  - [Shared skills worth copying](#shared-skills-worth-copying)
+  - [Routines worth copying](#routines-worth-copying)
+- **Per account**
+  - [Account-specific setup](#account-specific-setup)
+- **Maintaining this file**
+  - [How to update this](#how-to-update-this)
+
+## Results
+
+These figures compare my first 20 days with the bot team (Oct 21 to Nov 9, 2026, about 2.9 weeks) against the 4 and 12 weeks before it, as weekly averages.
+
+| Metric | Prior 12 weeks | Prior 4 weeks | With the team | vs 12 weeks | vs 4 weeks |
+| --- | --- | --- | --- | --- | --- |
+| PRs opened per week | 10.0 | 19.5 | 31.5 | +215% | +62% |
+| PRs merged per week | 9.7 | 19.0 | 26.9 | +179% | +42% |
+| Default-branch commits per week | 11.6 | 22.0 | 37.8 | +226% | +72% |
+| Reviews on others' PRs per week | 13.3 | 18.5 | 29.4 | +120% | +59% |
+| Distinct repos touched per week | 6.8 | 13.5 | 20.0 | +193% | +48% |
+| Median hours from PR open to merge | 1.8 | 1.7 | 1.2 | -30% | -26% |
+
+**How it was measured.** A read-only research bot pulled my authored PRs, default-branch commits, reviews and releases from GitHub across all the orgs and personal repos I work in, plus my tickets from the issue tracker. Times were bucketed in my time zone. Automation accounts and the vault's auto-backup commits are excluded. Work the bots did under my name counts as mine, so there's no me-vs-bots split.
+
+**Caveats.**
+
+- The after window is short, under three weeks, so a single batch moves the averages a lot.
+- The 4-week baseline is the closer comparison. It runs about twice the 12-week rate on most GitHub metrics, partly because the 12-week window includes two near-empty weeks in August and the 4-week one includes an unusual burst week.
+- The work mix changed. The after window was dominated by a runtime-upgrade sweep across many repos and a batch of client-library releases. Releases jumped from 0.75 to 7.3 per week, but that's a one-off batch, not a steady rate.
+- Not everything went up. Lines changed were flat against the 4-week baseline (+3%). The mean open-to-merge time, leaving out PRs open more than 60 days, rose from 11.2 to 28.2 hours against that baseline, even though the median fell. Tickets resolved as Done fell to 6.3 per week (-46% vs 4 weeks, -36% vs 12), which may reflect earlier bulk ticket closures rather than output.
+- I may have used an AI coding assistant before the baselines; that wasn't confirmed. If so, this compares an assistant alone with an assistant plus the bot team.
 
 ## How the team evolved
 
@@ -66,6 +92,65 @@ Lessons from that path:
 - Gate review by risk, not habit; review finished work once, and ask for sources on every claim.
 
 **Retiring a bot.** Deleting a bot erases its memory, including team facts it saved. Hide it first. Have it write its rules to a handoff file, and seed the new owner with that file (a description section plus a facts section it saves to memory). Delete it only after that.
+
+## Step-by-step setup
+
+These steps build the team described in [The current team](#team-structure) on a fresh Grok Bot account. Swap in your own repos, systems and names as you go.
+
+1. **Account and computer.** Create the Grok Bot account. Install the desktop app on your computer, register it, set local-tool permission to "always", and keep the app running.
+2. **Connectors.** Connect GitHub, Gmail, Slack, Atlassian, Google Drive and Google Docs (see [Connectors to set up](#connectors-to-set-up)). Give Gmail the modify or trash scope, and grant the GitHub connector's app any private repos your bots need.
+3. **Lock down tools.** In global settings, turn off the connector tools listed in [Connectors to set up](#connectors-to-set-up), set your time zone, and turn on auto-update when idle. If you register a phone, give it "ask", not "always".
+4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
+5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
+6. **Orchestrator.** Rename the default bot to Orchestrator, paste its description, and send it the standing rules from this guide to save to memory.
+7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, paste its description, set its avatar, leave the title blank, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
+8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [code style](#code-style) link, the [other standing rules](#other-standing-rules), and the routine cadence rules.
+9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
+10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and setup backup note.
+11. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
+12. **Grow the rules from real decisions.** When a bot slips, write the rule down right away where every bot sees it. If it's about code style, put it in your style-guide README.
+
+Usage limits depend on your plan. A personal plan may have tighter caps than a team plan, so start with fewer routines and add them as you need them.
+
+## Connectors to set up
+
+Connectors are set up once for the account, and every bot sees the same set.
+
+| Connector | Used for | Default policy |
+| --- | --- | --- |
+| GitHub | PRs, issues, CI, merge-watcher triggers | Bots push PR branches and open drafts. They never merge. |
+| Gmail | Reads, triage, drafts | Drafts only. Trash, never delete. |
+| Slack | Reads, summaries, drafts | Posts only when you ask, in your voice. |
+| Jira / Confluence (Atlassian) | Ticket lookups, the ticket-implement flow | Read-only unless you ask. |
+| Google Drive | Reading docs and files | Read-only. |
+| Google Docs | Reading docs, such as a style guide | Read-only. |
+| X (optional) | Reading posts | Optional. |
+
+Connector details a rebuild needs:
+
+- Connect Gmail with the modify or trash scope, so cleanup can move threads to trash.
+- The GitHub connector only sees repos you grant to its app. Add any private repos your bots or merge watchers need, or those calls fail.
+
+**Turn off risky connector tools in global settings.** This is what actually keeps bots from sending or editing, so do it on day one:
+
+- Gmail: `forward`, `send_draft`, `send_email`
+- Google Drive: `add_comment`, `create_file`, `create_folder`, `move_or_rename`, `reply_to_comment`, `share_file`, `trash_file`, `update_file`, `update_file_content`
+- Google Docs: `delete_content`, `replace_text`
+- Slack: optionally `slack_send_message` and `slack_schedule_message`, if you'd rather bots never post
+
+**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it, and nobody commits by hand.
+
+Also worth setting: your time zone in the user settings, so every bot reports times in your zone.
+
+## Machines
+
+- **The shared box** is an always-on Linux machine shared by all your bots. Use it for scratch work and handoff files. It isn't a security boundary between bots.
+- **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac.
+- **A dev VM** (optional), reached from your computer over SSH. Bots treat it as read-only unless you ask.
+
+Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
+
+Keep GitHub credentials on your own computer. Use your existing `gh` and git login there, and don't sign GitHub in on the shared box. Never put tokens in notes or handoff files.
 
 ## Team structure
 
@@ -573,66 +658,9 @@ If closed without merging: tell Justin in one line and leave Jira alone.
 Then delete this routine.
 ```
 
-## Connectors to set up
-
-Connectors are set up once for the account, and every bot sees the same set.
-
-| Connector | Used for | Default policy |
-| --- | --- | --- |
-| GitHub | PRs, issues, CI, merge-watcher triggers | Bots push PR branches and open drafts. They never merge. |
-| Gmail | Reads, triage, drafts | Drafts only. Trash, never delete. |
-| Slack | Reads, summaries, drafts | Posts only when you ask, in your voice. |
-| Jira / Confluence (Atlassian) | Ticket lookups, the ticket-implement flow | Read-only unless you ask. |
-| Google Drive | Reading docs and files | Read-only. |
-| Google Docs | Reading docs, such as a style guide | Read-only. |
-| X (optional) | Reading posts | Optional. |
-
-Connector details a rebuild needs:
-
-- Connect Gmail with the modify or trash scope, so cleanup can move threads to trash.
-- The GitHub connector only sees repos you grant to its app. Add any private repos your bots or merge watchers need, or those calls fail.
-
-**Turn off risky connector tools in global settings.** This is what actually keeps bots from sending or editing, so do it on day one:
-
-- Gmail: `forward`, `send_draft`, `send_email`
-- Google Drive: `add_comment`, `create_file`, `create_folder`, `move_or_rename`, `reply_to_comment`, `share_file`, `trash_file`, `update_file`, `update_file_content`
-- Google Docs: `delete_content`, `replace_text`
-- Slack: optionally `slack_send_message` and `slack_schedule_message`, if you'd rather bots never post
-
-**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it, and nobody commits by hand.
-
-Also worth setting: your time zone in the user settings, so every bot reports times in your zone.
-
-## Machines
-
-- **The shared box** is an always-on Linux machine shared by all your bots. Use it for scratch work and handoff files. It isn't a security boundary between bots.
-- **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac.
-- **A dev VM** (optional), reached from your computer over SSH. Bots treat it as read-only unless you ask.
-
-Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
-
-Keep GitHub credentials on your own computer. Use your existing `gh` and git login there, and don't sign GitHub in on the shared box. Never put tokens in notes or handoff files.
-
-## Step-by-step setup
-
-1. **Account and computer.** Create the Grok Bot account. Install the desktop app on your computer, register it, set local-tool permission to "always", and keep the app running.
-2. **Connectors.** Connect GitHub, Gmail, Slack, Atlassian, Google Drive and Google Docs (see [Connectors to set up](#connectors-to-set-up)). Give Gmail the modify or trash scope, and grant the GitHub connector's app any private repos your bots need.
-3. **Lock down tools.** In global settings, turn off the connector tools listed above, set your time zone, and turn on auto-update when idle. If you register a phone, give it "ask", not "always".
-4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
-5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
-6. **Orchestrator.** Rename the default bot to Orchestrator, paste its description, and send it the standing rules from this guide to save to memory.
-7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, paste its description, set its avatar, leave the title blank, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
-8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [code style](#code-style) link, the [other standing rules](#other-standing-rules), and the routine cadence rules.
-9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
-10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and setup backup note.
-11. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
-12. **Grow the rules from real decisions.** When a bot slips, write the rule down right away where every bot sees it. If it's about code style, put it in your style-guide README.
-
-Usage limits depend on your plan. A personal plan may have tighter caps than a team plan, so start with fewer routines and add them as you need them.
-
 ## Account-specific setup
 
-This is the only section for per-account details. Keep it generic too: name the kind of system ("company issue tracker"), never the system itself. Everything else lives in the body above, so link to it rather than repeating it.
+This is the only section for per-account details. Keep it generic too: name the kind of system ("company issue tracker"), never the system itself. Everything else lives in the rest of this file, so link to it rather than repeating it.
 
 ### Work account
 
@@ -660,3 +688,17 @@ Not set up yet. This is the plan.
 - **Machines:** a personal computer registered with the app, holding `gh`, git over SSH, personal repos and the personal vault.
 - **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines, because a personal plan may have tighter usage limits.
 - **Not covered yet:** calendar and meetings.
+
+## How to update this
+
+This file is meant to grow. Justin and any AI agent, including bots on his work and personal Grok Bot accounts and other agents, can add findings here as they discover them. When you do:
+
+- Keep the body generic, so it works for any account.
+- Put account-specific setup only in [Account-specific setup](#account-specific-setup).
+- Never add internal hostnames, company or product internals, people, tickets, ids, tokens or credential locations.
+- Update existing text in place instead of appending duplicates.
+- Keep each part doing its job: the story stays narrative, the how-to stays generic, and the team reference matches the team as it runs today.
+- Refresh [Results](#results) only with newly measured figures, and name their sources, windows and caveats.
+- Keep code style out of this file. It belongs in the styles repo (see [Code style](#code-style)).
+- Keep the [contents](#contents) list in sync with the H2 sections.
+- Commit with Conventional Commits, with Justin as author and committer, and no trailers.
