@@ -12,7 +12,7 @@ This README does three jobs at once:
 - **Technical instructions** anyone can follow to build their own: [Step-by-step setup](#step-by-step-setup), [Connectors to set up](#connectors-to-set-up) and [Machines](#machines).
 - **A backup and the current state of my team,** enough to recreate it: every bot's ready-to-paste description, the rules, the shared skills and the routines with their full prompts, from [Team structure](#team-structure) through [Routines worth copying](#routines-worth-copying), plus the per-account details in [Account-specific setup](#account-specific-setup).
 
-This README is the single source of truth for the team's process and setup; the vault's process notes are retired into it. Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [the update skill](.agents/skills/update-brain-readme/SKILL.md).
+This README is the single source of truth for the team's process and setup, and its backup and rebuild record; the vault's process notes are retired into it. Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [the update skill](.agents/skills/update-brain-readme/SKILL.md).
 
 ## Contents
 
@@ -74,7 +74,7 @@ Lessons from that path:
 - Measure a team change. Compare usage and hop counts about two weeks after a reorg, and split a lane only if one area is clearly a bottleneck.
 - Keep one human approval gate. Nothing ships, posts or gets fixed without the human's OK.
 - A clean-context reviewer bot is worth having. Ask it what would break, not for polish.
-- Give each shared resource, such as the notes vault, a single writer. This team's one exception is a sha-guarded trial for Rollup's own notes (see [Other standing rules](#other-standing-rules)).
+- Give each shared resource, such as the notes vault, a single writer (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)).
 - Bot-to-bot hops cost usage and attention. Idle bots are free. Cut relay hops first.
 - Give the human one inbox: every bot's questions go through the coordinator.
 - Run routines only as often as someone will act on them.
@@ -108,9 +108,9 @@ These steps build the team described in [The current team](#team-structure) on a
 4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
 5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
 6. **Orchestrator.** Rename your primary bot to Orchestrator, send its [description](#ready-to-paste-descriptions) as a message and ask it to remember it, then send it the standing rules from this guide to save to memory.
-7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)). Rollup and the reviewer depend on the others. For each bot, create it with its name and picture, send its description as the bot's first message and ask it to remember it, leave the label empty, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
+7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)). Rollup and the reviewer depend on the others. For each bot, create it with its name and picture, send its description as the bot's first message and ask it to remember it, leave the label empty, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
 8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [code style](#code-style) link, the [other standing rules](#other-standing-rules), and the routine cadence rules.
-9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
+9. **Shared skills.** Ask Orchestrator to save each of the six [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
 10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and the daily brain README PR.
 11. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
 12. **Grow the rules from real decisions.** When a bot slips, write the rule down right away where every bot sees it. If it's about code style, put it in your style-guide README.
@@ -143,7 +143,7 @@ Connector details a rebuild needs:
 - Google Docs: `delete_content`, `replace_text`
 - Slack: optionally `slack_send_message` and `slack_schedule_message`, if you'd rather bots never post
 
-**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it, apart from the one trial in [Other standing rules](#other-standing-rules), and nobody commits by hand.
+**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)), and nobody commits by hand.
 
 Also worth setting: your time zone in the user settings, so every bot reports times in your zone.
 
@@ -174,10 +174,10 @@ You talk to one bot, the **Orchestrator**. It answers quick asks itself, hands a
 | Platform Engineer | Engineer | Every other project repo that isn't one of the lanes above. |
 | Adversarial Reviewer | Cross-cutting | Reviews bot-written code and plans before you see them. Never rewrites, approves or merges. |
 | Researcher | Cross-cutting | Read-only cross-system lookups, answered with sources. Any bot can send it work; in practice the coordinator sends nearly all of it. Its value is in what it finds. |
-| Obsidian | Cross-cutting | The only writer to your notes vault (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)). Organizes notes, keeps git sync healthy, and summarizes coding sessions into notes. |
-| Rollup | Cross-cutting (optional) | A running log of what you got done, by day, week and year. During the Nov 10–24, 2026 trial, it writes its own accomplishments notes directly with sha guards. |
+| Obsidian | Cross-cutting | The only writer to your notes vault (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)). Organizes notes, keeps git sync healthy, and summarizes coding sessions into notes. |
+| Rollup | Cross-cutting (optional) | A running log of what you got done, by day, week and year, plus a velocity report every four weeks. |
 
-Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one writer for shared notes (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)).
+Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one writer for shared notes (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)).
 
 **When to add a bot or split a lane.** Start with the smallest useful roster. Add a bot only when the work has a stable specialist role: its own goal or area, tools and sources, approval boundary or schedule. Split a sub-area into its own owner only once it has its own rules and schedule, or its own steady stream of work. Until then a second bot mostly duplicates memory and adds hops.
 
@@ -273,7 +273,7 @@ I manage {owner}'s Obsidian vault. I organize and merge notes, keep git sync hea
 #### Rollup (optional)
 
 ```text
-I keep {owner}'s accomplishments notes up to date: an overview, a note per year, and stats by role. Every weekday afternoon I pull the day's work myself from the ticket tracker and GitHub, link PRs to their tickets, have Obsidian sync the notes into the vault, and send Orchestrator the day's deliverables for its recap. Ask me for daily, weekly or past summaries of what {owner} got done.
+I keep {owner}'s accomplishments notes up to date: an overview, a note per year, stats by role, and a velocity report every four weeks. Every weekday afternoon I pull the day's work myself from the ticket tracker and GitHub, link PRs to their tickets, have Obsidian sync the notes into the vault, and send Orchestrator the day's deliverables for its recap. Ask me for daily, weekly or past summaries of what {owner} got done.
 ```
 
 Rollup's counting rules: authored PRs count in the month they merged, and reviewed PRs once, in the month of your first review. Comment-only reviews don't count, and nothing counts in two months. One note per year. Leave PRs that can't be matched to a ticket as they are, without asking. For one-off summaries, read the notes instead of asking other bots.
@@ -328,7 +328,7 @@ The reviewer is a separate bot with a clean context, so it catches what the auth
 
 **What to ask for:** breaking changes and undesired behavior the author missed, checked against the project's precedent and the style rulebook. No nitpicks. The reviewer never rewrites the code, and it never approves, merges or comments on GitHub unless you ask.
 
-**Output format:** headline issues first. Each finding has file:line, a severity (blocker, should-fix or nit), the problem and a fix. The reviewer tests in throwaway repos or containers on the shared box when it needs to.
+**Output format:** headline issues first. Each finding has file:line, a severity (blocker or should-fix), the problem and a fix. The reviewer tests in throwaway repos or containers on the shared box when it needs to.
 
 The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 
@@ -368,7 +368,8 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **"Approved" doesn't mean "start".** A plan note marked `approved` means you signed off on it. Nobody builds until you give an explicit go. Note statuses: `draft`, `needs-review`, `approved`, `done`, `blocked`.
 - **A 🚀 reaction** on a bot's message means "do it" for what that message proposed.
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
-- **Vault notes.** The vault bot is the steward for all vault writes; its sha and rule checks have caught real problems. The one exception is Rollup's own accomplishments notes, which Rollup writes directly with sha guards, as a trial running Nov 10–24, 2026. Nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes. Notes carry `repo` and `project` fields. Done notes are filed under `projects/<repo>/` as `<date> <repo> <topic>`. Process and team-setup notes don't live in the vault; this README holds them. Project decisions live in that project's notes, and the vault's note rules live in its `AGENTS.md`.
+- **Vault notes.** The vault bot is the steward for all vault writes; its sha and rule checks have caught real problems. The one exception is Rollup's own accomplishments notes, which Rollup writes directly with sha guards, as a trial running Nov 10–24, 2026. Nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes.
+- **Vault layout.** Notes carry `repo` and `project` fields. Done notes are filed under `projects/<repo>/` as `<date> <repo> <topic>`. Process and team-setup notes don't live in the vault; this README holds them. Project decisions live in that project's notes, and the vault's note rules live in its `AGENTS.md`.
   - Folders: `inbox/`, `in-progress/`, `projects/<repo>/`, `specs/`, `archive/`, plus a spec template and `AGENTS.md`.
   - Agents create notes only as `draft` in `inbox/`, or update existing notes. When an agent finishes its work on a note, it sets `needs-review`. Only you set `approved`. (The weekly session summaries are the exception: they're written as `done` straight into their project folder.)
   - `draft`: an agent is still researching or writing; you don't need to act. `needs-review`: the agent is done and you need to look, including notes you're still thinking about. `approved`: you signed off; it waits in `inbox/` until you say go, moves to `in-progress/` when work starts, and stays `approved` while it's built. `done`: built or finished, filed to `projects/<repo>/` (there's no `done/` folder), and archived only when superseded or stale. `blocked`: paused by an outside decision; it needs a `Blocked on:` line with the reason and who blocked it, stays in its current folder, and is never filed, archived or flagged as invalid.
@@ -380,7 +381,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
   - Edits can conflict when you change a note while a bot does. If a second machine also syncs the vault, such as a cron job on the dev VM, sync commits, pulls with rebase, then pushes, so nobody rewrites history or force-pushes.
   - The vault bot moves deletions to Trash and leaves archived notes' text unchanged.
   - On a new install, turn on community plugins by hand, and gitignore OS files, `.trash/` and the workspace files.
-- **Tickets a bot starts join the active sprint.** When a ticket a bot created moves to In Progress, the bot adds it to the current active sprint.
+- **Tickets a bot starts join the active sprint.** When a ticket a bot created moves to In Progress, the bot adds it to the current active sprint and cites the sprint's name or id.
 - **Bots clean up their scratch copies.** Once the work is done or merged, a bot deletes its scratch clones and worktrees without asking. It never touches your own checkouts.
 - **Bot output is your output.** Work the bots do under your name counts as your own, in reports, rollups and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
@@ -389,7 +390,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 
 ## Shared skills worth copying
 
-Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These five are generic. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
+Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These six are generic; the sixth, update-brain-readme, lives in this repo. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
 
 ### pr-review-loop
 
@@ -405,7 +406,7 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 
 ### vault-write
 
-Use when any bot needs to create or change a note in the vault, where only the vault bot may write (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)).
+Use when any bot needs to create or change a note in the vault, where only the vault bot may write (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)).
 
 1. **Ask the vault bot for the change.** Say which note (its target path in the vault, or new), what should change, and why. Include any source material it needs. For a new note or a requested word-for-word replacement, put the full content in a handoff file, with the frontmatter the vault expects (such as `repo`, `project` and `status`), and its byte count and sha256 (`wc -c` and `sha256sum`). Otherwise describe the change and let the vault bot do the edit and keep the note's structure and frontmatter.
 2. **The vault bot makes the edit.** It updates any index or project page that should link the note and reads the file back to verify. It never commits by hand: the vault's Obsidian Git plugin auto-commits, pushes and pulls.
@@ -424,6 +425,10 @@ Use when one API or feature change has to land in several libraries (SDKs) at on
 6. Send all the PRs to the reviewer at once for a parity check, then follow pr-review-loop.
 7. Report a table of repo, PR, status, CI and open questions. Nothing public-facing goes out without the human's words.
 
+### update-brain-readme
+
+Use when adding to, correcting or restructuring this README. The skill lives in this repo at [.agents/skills/update-brain-readme/SKILL.md](.agents/skills/update-brain-readme/SKILL.md); the shared copy points to that file.
+
 ### client-library-release
 
 Use when a library needs a version bump, changelog entry and release, for one library or several.
@@ -440,7 +445,7 @@ Use when a library needs a version bump, changelog entry and release, for one li
 
 Use when the human asks a bot to implement a ticket.
 
-1. Move the ticket to In Progress, add it to the current active sprint if a bot created it, and implement it as written.
+1. Move the ticket to In Progress, add it to the current active sprint if a bot created it (citing the sprint's name or id), and implement it as written.
 2. Open a **draft** PR (never merge) with the ticket key in the title, so it shows in the tracker's development panel. Add a web link to the PR on the ticket.
 3. When the PR is ready for the human's review, move the ticket to In Review and leave a short comment on what changed: files, intent and the PR URL.
 4. Create a one-shot GitHub routine scoped to that PR, triggered on `pr-merged` and `pr-closed`. On merge, move the ticket to Done, comment that it merged, and tell the human through Orchestrator. On close without merge, tell the human only. The routine deletes itself after it fires.
@@ -456,6 +461,8 @@ Don't:
 
 ## Routines worth copying
 
+Each routine's prompt in the [routine reference](#routine-reference) is the backup: rebuild a routine by pasting its prompt and schedule into the owning bot.
+
 Cadence rules first, because they matter more than any single routine:
 
 - Only work that would block your day runs hourly or faster. Everything else runs once a day at most, or once a week when that's enough.
@@ -463,7 +470,6 @@ Cadence rules first, because they matter more than any single routine:
 - **No blind polling.** Use an event trigger (a GitHub PR event or a Slack message) wherever one exists.
 - **Weekly is the default for upkeep.** Housekeeping routines, such as session summaries, run weekly unless you need them fresher. Daily is for things you read daily, such as the recap and the morning nudge.
 - **Don't add a routine just to watch usage;** it would use usage itself. Fold that check into a routine that already runs.
-- **Weekly usage leak check.** Orchestrator flags runaway routine counts, duplicated work, or jumps in deleted or not-from-a-routine usage, without changing any routine.
 - **Cheap check first, then exit quietly.** Start with the cheapest check that rules out work (is the machine reachable, did anything change). End without any messages when there's nothing new. If a machine it needs is offline, stop and retry at most once a day.
 
 The routines (times are in your own zone):
@@ -474,6 +480,7 @@ The routines (times are in your own zone):
 | [Done-notes filing](#done-notes-filing) | Orchestrator, with Obsidian filing | Weekdays ~2:30 PM |
 | [End-of-day recap](#end-of-day-recap) | Orchestrator | Weekdays ~3:00 PM |
 | [Accomplishments rollup](#accomplishments-rollup) (optional) | Rollup | Weekdays ~2:30 PM, before the recap |
+| Velocity report (optional) | Rollup | Every four weeks |
 | [Weekly session summaries](#weekly-session-summaries) | Obsidian | Mondays ~10:00 AM, with a Tue–Fri noon fallback |
 | Daily brain README PR ([process](#rolling-readme-prs)) | Orchestrator, with the dev-env bot committing | Weekdays ~3:00 PM |
 | Daily styles README PR ([process](#rolling-readme-prs)) | Orchestrator | Weekdays ~3:00 PM |
@@ -493,7 +500,7 @@ The brain README and the styles README stay current through one rolling draft PR
 
 ### Routine reference
 
-Each routine's full saved prompt is below. The prompts are kept word for word, except where they named internal systems, paths, ids or retired bots; those were generalized. Placeholders such as `<repo>`, `<n>`, `<ticket>` and `<KEY>` are part of the template. The three rolling-PR routines are described in [Rolling README PRs](#rolling-readme-prs) rather than copied. The [accomplishments rollup](#accomplishments-rollup) prompt reflects that routine as it runs outside the Nov 10–24, 2026 trial; during the trial, Rollup writes its own notes directly with sha guards instead of through the vault bot.
+Each routine's saved prompt as of 2026-11-10 is below, word for word except where they named internal systems, paths, ids or retired bots; those were generalized. Placeholders such as `<repo>`, `<n>`, `<ticket>` and `<KEY>` are part of the template. The three rolling-PR routines are described in [Rolling README PRs](#rolling-readme-prs) rather than copied. The [accomplishments rollup](#accomplishments-rollup) prompt reflects that routine outside Rollup's vault trial (see [Other standing rules](#other-standing-rules)).
 
 #### Morning nudge
 
@@ -544,6 +551,8 @@ Keep it skimmable, with no filler, and don't invent anything a source didn't sho
 ```
 
 #### Accomplishments rollup
+
+Rollup also writes a velocity report every four weeks; that routine's prompt isn't part of this reference.
 
 - **Owner:** Rollup (optional)
 - **Schedule:** `30 14 * * 1-5` in your time zone (weekdays ~2:30 PM), flexible: up to 15 min early, never late
@@ -611,7 +620,7 @@ Ground rules: I'm Obsidian, the only bot that writes to the vault. Message no ot
 2. Window: from each bot's read_through (if null, the first position on or after 2026-11-02 00:00 in his time zone) up to the last position before 00:00 this Monday, in his time zone.
 3. Read the transcripts myself in the main run, not in a subagent; a subagent can't read my own transcript. Page ReadTranscript (in = full id, limit 30, before) with write_to_file. After every page, run the ingest script with the work dir and that exact file; it checks the header's bot id, digests the page and deletes it. Pass explicit file names only, never a glob over the shared tool-output folder; other agents' files live there. If a header says "this session" for another bot, stop that bot and report it.
 4. Run the digest script's group step with the work dir, the window start and end, and a cap of 25. Drop any group already covered by a draft in the drafts folder's pending/ or written/ (same artifacts or same source positions). Save the over-cap groups as deferred in the state file so they're drafted on later runs instead of lost. Process deferred groups first, oldest first, and keep each run's total at 25 or fewer.
-5. For each kept group, in a fresh subagent: run the digest script's render step for that group with a 9,000-character limit, then write one draft to the drafts folder's pending/ in the note format: Decisions (with the why) / Shipped / Open, no status chatter and no bot mechanics. Use only facts present in the render. Frontmatter: status: done, the destination (projects/<repo>/ or process/, never inbox/), and a source line with bot names, full ids and positions. Merge groups about the same work into one draft. Cover only workstreams with no existing vault note, and link Rollup's accomplishments or bot memory instead of restating them.
+5. For each kept group, in a fresh subagent: run the digest script's render step for that group with a 9,000-character limit, then write one draft to the drafts folder's pending/ in the note format: Decisions (with the why) / Shipped / Open, no status chatter and no bot mechanics. Use only facts present in the render. Frontmatter: status: done, the destination (projects/<repo>/, or projects/general/, never inbox/), and a source line with bot names, full ids and positions. Merge groups about the same work into one draft. Cover only workstreams with no existing vault note, and link Rollup's accomplishments or bot memory instead of restating them.
 6. Run the digest script's scan step on every new draft, and move any hit to the drafts folder's blocked/.
 7. Only after every bot finishes, advance every bot's read_through together and record the run. Delete the work dir's raw pages (none should remain), and confirm the shared tool-output folder holds none of this run's files.
 
@@ -647,7 +656,7 @@ Then delete this routine.
 
 ## Account-specific setup
 
-This is the only section for per-account details. Keep it generic too: name the kind of system ("company issue tracker"), never the system itself. Everything else lives in the rest of this file, so link to it rather than repeating it.
+This is the only section for per-account details. Keep it generic too: name the kind of system ("company issue tracker"), never the system itself. Everything else lives in the rest of this file, so link to it rather than repeating it. The account-specific rebuild checklist (credential locations, machine and host fixes) is kept in a private location, not here.
 
 ### Work account
 
@@ -676,4 +685,4 @@ Not set up yet. This is the plan.
 - **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines and add them as you need them.
 - **Not covered:** calendar and meetings.
 
-To keep this file current, follow [the update skill](.agents/skills/update-brain-readme/SKILL.md).
+This README is the single source of truth for the bot team. Update it with [the update skill](.agents/skills/update-brain-readme/SKILL.md) whenever a bot, skill, routine or rule changes.
