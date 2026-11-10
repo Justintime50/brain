@@ -539,10 +539,10 @@ For each draft in pending/, oldest first:
 
 ## Deliver
 A short summary to Justin in this Grok Bot chat:
-- Editor sessions: sessions kept, skipped and trashed, plus new notes and project indexes.
-- Grok Bot: groups …
-
-(Deliver section abbreviated in this backup.)
+- Coding-assistant sessions: sessions kept, skipped and trashed, plus new notes and project indexes.
+- Grok Bot: groups found, drafted, deferred and blocked; drafts written to the vault; any bot that couldn't be read.
+- Notable open threads or coding-assistant gotchas.
+If nothing is new, send one line saying so. A fallback with nothing owed sends nothing. Message no one else.
 ```
 
 #### Weekly style-guide PR
