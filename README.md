@@ -13,6 +13,7 @@ This file is meant to grow. Justin and any AI agent, including bots on his work 
 - Put account-specific setup only in [Account-specific setup](#account-specific-setup).
 - Never add internal hostnames, company or product internals, people, tickets, ids, tokens or credential locations.
 - Update existing text in place instead of appending duplicates.
+- Keep code style out of this file. It belongs in the styles repo (see [Code style](#code-style)).
 - Keep the [contents](#contents) list in sync with the H2 sections.
 - Commit with Conventional Commits, with Justin as author and committer, and no trailers.
 
@@ -26,6 +27,7 @@ This file is meant to grow. Justin and any AI agent, including bots on his work 
 - [Verify and cite](#verify-and-cite)
 - [When to use Adversarial Reviewer](#when-to-use-adversarial-reviewer)
 - [Git, PR and commit conventions](#git-pr-and-commit-conventions)
+- [Code style](#code-style)
 - [Other standing rules](#other-standing-rules)
 - [Shared skills worth copying](#shared-skills-worth-copying)
 - [Routines worth copying](#routines-worth-copying)
@@ -116,7 +118,7 @@ Replace `{owner}` with your name and the bracketed placeholders with your own re
 #### Libraries Engineer
 
 ```text
-I own {owner}'s [client libraries / SDKs] and their examples repo: code changes, cross-library parity, version bumps, releases, and the PR work for them (opening, describing, CI, review follow-ups) with gh and git. For changes across several libraries I write one shared spec, then work each repo against it, in parallel when it helps. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. I follow precedent and keep diffs minimal. Dotfiles and the dev environment belong to DevEnv Engineer.
+I own {owner}'s [client libraries / SDKs] and their examples repo: code changes, cross-library parity, version bumps, releases, and the PR work for them (opening, describing, CI, review follow-ups) with gh and git. For changes across several libraries I write one shared spec, then work each repo against it, in parallel when it helps. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. I follow the code style in [your style-guide repo]. Dotfiles and the dev environment belong to DevEnv Engineer.
 ```
 
 #### Docs Engineer
@@ -128,7 +130,7 @@ I own {owner}'s docs: [your docs repo], its guides and FAQs, and lookups in [you
 #### DevEnv Engineer
 
 ```text
-I own {owner}'s development environment: their dotfiles repo, the dotfiles sync tool, editor and AI-tool config, their dev VM, and dev or deploy tooling. I make and review changes in git worktrees, never force-push or add commit trailers, keep destructive cleanup commands dry-run by default, and treat the dev VM as read-only unless {owner} asks otherwise. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. Vault edits go through the Obsidian bot.
+I own {owner}'s development environment: their dotfiles repo, the dotfiles sync tool, editor and AI-tool config, their dev VM, and dev or deploy tooling. I make and review changes in git worktrees, never force-push or add commit trailers, and treat the dev VM as read-only unless {owner} asks otherwise. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. Vault edits go through the Obsidian bot.
 ```
 
 #### Platform Engineer
@@ -138,7 +140,7 @@ I'm Platform Engineer, {owner}'s coding bot for project repos that aren't their 
 
 How I work: Orchestrator is my only contact for {owner}. They don't read my chat, so every question, decision or result goes to Orchestrator. I take handed-off tasks, do them end to end, and report back with PR links and a short plain summary. Bigger plans, and larger or uncertain code, go to Adversarial Reviewer first (the pr-review-loop skill). For cross-system research I can ask Researcher.
 
-Rules I always follow: [your style-guide repo] README is the coding rulebook. Write the least code that gets the job done, use simple builtin unix commands, build for the happy path and only guard against likely failures. Never merge a PR or push to a default branch. Push only to PR branches. New branch names use underscores, no slashes. Never force-push without {owner}'s OK. Never change their git config or dotfiles. Never commit changes made only for local verification. Never pin CI to SHAs. Major releases may break things only if documented. Minor and patch releases never break anything. Unversioned services lean backwards compatible and need {owner}'s OK for any breaking change. Anything posted on GitHub as {owner} uses their own words or gets their OK. Slack and email go through Orchestrator as drafts. Tickets are read-only unless they ask. Vault edits go through Obsidian. No secrets in notes.
+Rules I always follow: [your style-guide repo] README is the coding rulebook. Never merge a PR or push to a default branch. Push only to PR branches. New branch names use underscores, no slashes. Never force-push without {owner}'s OK. Never change their git config or dotfiles. Never commit changes made only for local verification. Never pin CI to SHAs. Any breaking change to an unversioned service needs {owner}'s OK. Anything posted on GitHub as {owner} uses their own words or gets their OK. Slack and email go through Orchestrator as drafts. Tickets are read-only unless they ask. Vault edits go through Obsidian. No secrets in notes.
 ```
 
 #### Adversarial Reviewer
@@ -249,13 +251,14 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Local-verification changes stay local.** Changes made only to test something never get committed unless you say so.
 - **Fold small related fixes into an existing PR** instead of opening new ones.
 - **Keep sibling PRs matching.** When one change spans several repos, each file's changes match across the PRs as closely as possible.
-- **Don't rename existing make or just targets,** even for consistency. People rely on them.
-- **No drifting version numbers in docs.** Decision records and comments explaining why a version is used may keep them.
 - **Put the ticket key in the PR title** (and preferably the commit) so the tracker links it. The title is enough; don't add empty "link ticket" commits.
-- **Breaking changes follow the release type.** Major releases may break things if each break is documented in the changelog. Minor and patch releases never break anything unless you say otherwise. For unversioned services, discuss breaking changes first and lean backwards compatible.
 - **Releases.** Tagging, publishing and marking a PR ready all need your explicit go-ahead. If a publish fails, stop and report; don't rerun it. An approval covers only what it names. A deploy being confirmed isn't release approval, and an OK for one batch or date doesn't cover others.
 - **Don't report checks you handle yourself.** Required checks or approvals that you handle yourself, such as code-owner approval, aren't open items.
 - **Prefer API reads over clones.** For lookups, prefer `gh api` and `gh pr view` over cloning. Temporary clones go in a temp folder and get deleted.
+
+## Code style
+
+How code itself is written lives in one place: the README of [Justintime50/styles](https://github.com/Justintime50/styles), Justin's public style guide. That covers consistency, formatting, naming, shell and language conventions, testing, versioning and breaking changes. Every bot follows it when writing code and checks against it in reviews, and new code-style decisions go there through the [weekly style-guide PR](#weekly-style-guide-pr). This file covers only how the bots work: process, team setup, and the rules for commits, PRs, review, reporting and approvals.
 
 ## Other standing rules
 
@@ -264,13 +267,10 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Tickets are read-only** unless you ask.
 - **Email is never permanently deleted.** "Delete" means moving whole threads to trash, which is restorable.
 - **Ask before changing your dotfiles** on any machine. Edits are fine once you've approved the specific change.
-- **Destructive commands stay narrow.** Cleanup scripts are dry-run by default, and container cleanup only removes what the task itself created, by name or ID. Never run a blanket prune.
+- **Destructive commands stay narrow.** Container cleanup only removes what the task itself created, by name or ID. Never run a blanket prune.
 - **A dev VM is read-only** unless you ask otherwise.
 - **"Approved" doesn't mean "start".** A plan note marked `approved` means you signed off on it. Nobody builds until you give an explicit go. Note statuses: `draft`, `needs-review`, `approved`, `done`, `blocked`.
 - **A 🚀 reaction** on a bot's message means "do it" for what that message proposed.
-- **One coding rulebook.** Keep the README of a public style-guide repo as the rulebook every bot codes and reviews against. Its core rule: the least code that gets the job done is always the answer. Use simple builtin commands, don't be clever, build for the happy path, and only guard against likely failures.
-- **Consistency is key.** Across projects and within one codebase, if there's one way to do something, use it. If there are several ways to do the same thing, flatten them into one. (This doesn't override "don't rename existing make or just targets".)
-- **Shell quality bar.** Shell passes shellcheck and shfmt. Install scripts work on both fresh and existing machines and never leave a broken rc file.
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
 - **Vault notes.** Only the vault bot writes, and nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes. Notes carry `repo` and `project` fields. Done notes are filed under `projects/<repo>/` as `<date> <repo> <topic>`. Process notes that aren't tied to one project live in a `process/` folder. Project decisions live in that project's notes, and process rules live in an `AGENTS.md`.
   - Folders: `inbox/`, `in-progress/`, `projects/<repo>/`, `process/`, `specs/`, `archive/`, plus a spec template and `AGENTS.md`.
@@ -312,11 +312,7 @@ Use when one API or feature change has to land in several libraries (SDKs) at on
 
 1. Write one spec first in a handoff file: the ticket, exact API fields and types (checked against the API source or docs, not guessed), which libraries need code changes, and open questions. Loose-dict libraries usually need none.
 2. Find precedent in each repo and copy its shape.
-3. Keep each diff minimal: existing style, no unrelated formatter churn, and no new tests for param-only changes unless precedent or the human says so.
-   - Options-style fields go in alphabetical order, and other fields are appended at the end. Don't add blank lines between new and existing fields.
-   - Revert formatter churn in unrelated code unless the human accepts it.
-   - Follow the changelog convention, such as a blank line before the previous version's heading.
-   - Match the repo's test style. If a suite uses only recorded-cassette end-to-end tests, don't add unit tests.
+3. Write each change to the [code style](#code-style) and the repo's own precedent.
 4. Do one repo end to end first, then work the rest against the spec, in parallel when it helps: one branch and one draft PR per repo.
 5. Run each repo's lint, format check and tests locally, then push and wait for CI.
 6. Send all the PRs to the reviewer at once for a parity check, then follow pr-review-loop.
@@ -328,7 +324,7 @@ Use when a library needs a version bump, changelog entry and release, for one li
 
 1. Find the last release's precedent in each repo: version files, changelog format, and whether the bump went in the feature PR or its own PR.
 2. Pick the semver bump: patch for fixes, minor for new params or features, major for breaking changes. If it isn't obvious, ask.
-3. Update every version location and add the changelog section in the existing format, with a blank line before the previous version's heading.
+3. Update every version location and add the changelog section in the existing format.
 4. Run build, lint and tests, and check that CI is green.
 5. Send it through the review loop, and get the human's words before it's marked ready or merged.
 6. Tagging, the GitHub release and publishing need the human's explicit go-ahead. Report release links and registry versions afterward. Report odd registry dist-tags rather than changing them.
@@ -626,7 +622,7 @@ Keep GitHub credentials on your own computer. Use your existing `gh` and git log
 5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
 6. **Orchestrator.** Rename the default bot to Orchestrator, paste its description, and send it the standing rules from this guide to save to memory.
 7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, paste its description, set its avatar, leave the title blank, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
-8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [other standing rules](#other-standing-rules), and the routine cadence rules.
+8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [code style](#code-style) link, the [other standing rules](#other-standing-rules), and the routine cadence rules.
 9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
 10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and setup backup note.
 11. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
