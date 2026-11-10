@@ -36,6 +36,7 @@ This README is the single source of truth for the team's process and setup, and 
   - [Routines worth copying](#routines-worth-copying)
 - **Per account**
   - [Account-specific setup](#account-specific-setup)
+  - [Private brain docs](#private-brain-docs)
 
 ## Results
 
@@ -656,7 +657,7 @@ Then delete this routine.
 
 ## Account-specific setup
 
-This is the only section for per-account details. Keep it generic too: name the kind of system ("company issue tracker"), never the system itself. Everything else lives in the rest of this file, so link to it rather than repeating it. The account-specific rebuild checklist (credential locations, machine and host fixes) is kept in a private location, not here.
+This is the only section for per-account details. Keep it generic too: name the kind of system ("company issue tracker"), never the system itself. Everything else lives in the rest of this file, so link to it rather than repeating it. The account-specific rebuild checklist lives in the [private brain doc](#private-brain-docs).
 
 ### Work account
 
@@ -684,5 +685,18 @@ Not set up yet. This is the plan.
 - **Machines:** a personal computer registered with the app, holding `gh`, git over SSH, personal repos and the personal vault.
 - **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines and add them as you need them.
 - **Not covered:** calendar and meetings.
+
+## Private brain docs
+
+This README is the generic, public guide. Private brain docs add the employer- and account-specific details: where credentials live, hosts, internal tools and rebuild specifics, including the account-specific rebuild checklist. Keep each private doc somewhere private, such as a note at the root of a private notes vault.
+
+Make bots aware of a private doc in these ways:
+
+1. **Shared memory.** Save a shared memory fact naming where the doc lives and when to read it.
+2. **Vault rules.** Point to the doc from the vault's agent rules file (`AGENTS.md`).
+3. **Pointer skill (optional).** Add a small shared skill that says when to read the doc and where it lives.
+4. **Bot description.** For a bot that needs the doc on every task, add a line to that bot's description.
+
+**Precedence.** This README wins for generic process, and the private doc wins for its own specifics. A bot that finds the two in conflict flags it to the coordinator.
 
 This README is the single source of truth for the bot team. Update it with [the update skill](.agents/skills/update-brain-readme/SKILL.md) whenever a bot, skill, routine or rule changes.
