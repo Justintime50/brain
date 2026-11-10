@@ -70,6 +70,10 @@ Lessons from that path:
 
 - One bot per tool is fine for learning. When the bots mostly forward requests, regroup them into owners of whole areas.
 - More bots doesn't mean more parallelism. One owner can fan out short-lived subagents.
+- Short-lived workers beat permanent per-repo bots. Parallel writers drift unless they share full context, and every permanent bot is one more memory to keep in sync. Workers read the same spec and shared skills, then go away.
+- Fan-out spends more per task. Each parallel worker reads the spec, so a four-repo change costs more than doing it serially, but it finishes in about the time of one repo. Use it for multi-repo changes, not small edits.
+- Most usage comes from interactive work and bot-to-bot hops, not routines. Routines are only a few percent, so cutting hops saves more than trimming schedules.
+- Measure a team change. Compare usage and hop counts about two weeks after a reorg, and split a lane only if one area is clearly a bottleneck.
 - Keep one human approval gate. Nothing ships, posts or gets fixed without the human's OK.
 - A clean-context reviewer bot is worth having. Ask it what would break, not for polish.
 - Give each shared resource, such as the notes vault, a single writer.
@@ -84,6 +88,17 @@ Lessons from that path:
 - Gate review by risk, not habit; review finished work once, and ask for sources on every claim.
 
 **Retiring a bot.** Deleting a bot erases its memory, including team facts it saved. Hide it first. Have it write its rules to a handoff file, and seed the new owner with that file (a description section plus a facts section it saves to memory). Delete it only after that.
+
+### Further reading
+
+The design leaned on these public sources:
+
+- Grok Bot docs: [Create and manage Bots](https://docs.x.ai/grok-bot/bots) ("Start with the smallest useful roster… Add another Bot only when the work has a stable specialist role"), [Message and collaborate](https://docs.x.ai/grok-bot/chat-and-collaboration) (one owner per stage; every bot reply, including bot-to-bot, counts toward usage) and the [FAQ](https://docs.x.ai/grok-bot/faq) (bots share one computer, its files and logins, so they aren't a security boundary).
+- First-party guides: [Grok Bot for Engineering](https://x.ai/bot/guides/grok-bot-for-engineering) (engineer bots that each own a product area and fan work out) and [How I run multiple teams of Grok Bots](https://x.ai/bot/guides/how-i-run-multiple-teams-of-grok-bots) (a coordinator staffing project group chats from reusable bots).
+- Anthropic: [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) (start simple; add orchestrator-workers or parallelization only where it pays) and [How we built our multi-agent research system](https://www.anthropic.com/research/multi-agent-research-system) (multi-agent runs use far more tokens, and coding has fewer truly parallel tasks than research).
+- Cognition: [Don't Build Multi-Agents](https://cognition.com/blog/dont-build-multi-agents) and [Multi-Agents: What's Actually Working](https://cognition.com/blog/multi-agents-working) (share full context, keep writes single-threaded, use a clean-context reviewer).
+- OpenAI: [A practical guide to building agents](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-agents/) (the manager pattern versus decentralized handoffs).
+- LangChain: [How and when to build multi-agent systems](https://www.langchain.com/blog/how-and-when-to-build-multi-agent-systems) (reads parallelize far better than writes).
 
 ## Step-by-step setup
 
@@ -142,6 +157,10 @@ Also worth setting: your time zone in the user settings, so every bot reports ti
 
 Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
 
+On a Mac, set your SSH config to add keys to the agent and use the keychain, then load your key into the keychain once, so bots' git over SSH never stops at a passphrase prompt.
+
+Nothing should depend on browser logins on the shared box. Use connectors, or your own computer, instead.
+
 Keep GitHub credentials on your own computer. Use your existing `gh` and git login there, and don't sign GitHub in on the shared box. Never put tokens in notes or handoff files.
 
 ## Team structure
@@ -162,6 +181,8 @@ You talk to one bot, the **Orchestrator**. It answers quick asks itself, hands a
 
 Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one writer for shared notes.
 
+**When to add a bot or split a lane.** Start with the smallest useful roster. Add a bot only when the work has a stable specialist role: its own goal or area, tools and sources, approval boundary or schedule. Split a sub-area into its own owner only once it has its own rules and schedule, or its own steady stream of work. Until then a second bot mostly duplicates memory and adds hops.
+
 Things that didn't earn their keep and aren't worth recreating:
 
 - Bots named after a single tool (a Jira bot, a Gmail bot, a GitHub bot). Their work fits the coordinator or the area owners.
@@ -179,6 +200,8 @@ Each bot has a name, a blank title, an avatar, and a description. The descriptio
 4. **Lane boundaries.** Who owns the neighboring areas, so it can flag crossover instead of doing it.
 
 A shape that works for engineer avatars is the same icon in a different color per engineer, with a distinct icon for each cross-cutting bot. That makes the bot list easy to scan.
+
+If your bots start with blank descriptions, have the coordinator draft each one from that bot's chat history. Comparing the drafts shows overlapping duties; give each duty a single owner.
 
 Keep longer standing rules in the bot's memory rather than its description. After creating a bot, send it its rules and tell it to save them to memory.
 
@@ -231,7 +254,7 @@ I review code and plans adversarially when one of {owner}'s bots writes them, be
 ```text
 I'm Researcher, the read-only research bot for {owner} and their bots. I take questions that span more than one system or take a while: [your knowledge base], [your docs repo], other repos, Slack history, wikis and tickets, email, and GitHub lookups with gh. I answer with sources, such as file:line, commit sha, ticket and PR links, and Slack permalinks.
 
-Routing: an owner bot does a quick check in its own repo itself. I take anything that crosses systems, needs digging, or would pull an owner off shipping. Any of {owner}'s bots can send me a question.
+Routing: an owner bot does a quick check in its own repo itself. I take anything that crosses systems, needs digging, or would pull an owner off shipping. Any of {owner}'s bots can send me a question. I don't take over Rollup's stats pulls.
 
 How I work:
 - I only read. I never push, commit to a shared checkout, post, comment, react, review, label, merge, retitle, or create, edit or transition tickets. I don't send, trash or relabel email. Scratch clones go in a temp folder and I delete them afterward. A `git pull --ff-only` in an existing checkout is fine only when it's clean and I've been asked to.
@@ -281,7 +304,7 @@ The rule got here in steps. First, any bot could post a link for every deliverab
 - **Keep Orchestrator free.** Anything beyond a quick check goes to Researcher, or to the owning engineer if it's free, so Orchestrator's context stays clean.
 - **One consolidated reply.** When Orchestrator hands work off, it messages the other bots first, then sends you a single message saying what went where and what to expect. It doesn't send a separate acknowledgement first.
 - **Plan delivery.** Short plans (a few paragraphs) come back in chat. Anything with many decisions or lengthy findings goes into a vault inbox note instead.
-- **Files, not chat history.** Anything long goes into a handoff file on the shared box. The sender reports its byte count and sha256, and the receiver checks them. Each in-flight project keeps one current-state file (what's done, what's next, open questions), and bots pass that path around instead of recaps or transcripts.
+- **Files, not chat history.** Long inline messages get truncated, so anything longer than a short paragraph goes into a handoff file on the shared box. The sender reports its byte count and sha256, and the receiver checks them. Each in-flight project keeps one current-state file (what's done, what's next, open questions), and bots pass that path around instead of recaps or transcripts.
 - **Transcripts are a last resort.** Reading another chat's transcript is a last resort: at most two, with a small limit. A rule that matters goes into memory or the setup note, never only into a chat.
 - **Group chats for big projects.** For a big project, a group chat with the coordinator, the owner and the reviewer keeps handoffs visible. Every reply there is billed, and approval cards and drafts don't appear in groups. Keep it to about three bots.
 - **One owner end to end.** A task stays with the bot that owns the repo or system. Before messaging another bot, the sender checks whether it can do the step itself with the same tools.
@@ -351,16 +374,26 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
 - **Vault notes.** Only the vault bot writes, and nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes. Notes carry `repo` and `project` fields. Done notes are filed under `projects/<repo>/` as `<date> <repo> <topic>`. Process notes that aren't tied to one project live in a `process/` folder. Project decisions live in that project's notes, and process rules live in an `AGENTS.md`.
   - Folders: `inbox/`, `in-progress/`, `projects/<repo>/`, `process/`, `specs/`, `archive/`, plus a spec template and `AGENTS.md`.
-  - Only you set `approved`. `blocked` notes are never filed or archived.
+  - Agents create notes only as `draft` in `inbox/`, or update existing notes. When an agent finishes its work on a note, it sets `needs-review`. Only you set `approved`. (The weekly session summaries are the exception: they're written as `done` straight into their project folder.)
+  - `draft`: an agent is still researching or writing; you don't need to act. `needs-review`: the agent is done and you need to look, including notes you're still thinking about. `approved`: you signed off; it waits in `inbox/` until you say go, moves to `in-progress/` when work starts, and stays `approved` while it's built. `done`: built or finished, filed to `projects/<repo>/` (there's no `done/` folder), and archived only when superseded or stale. `blocked`: paused by an outside decision; it needs a `Blocked on:` line with the reason and who blocked it, stays in its current folder, and is never filed, archived or flagged as invalid.
+  - Specs stay in `specs/` through every status. A research agent writes one from the template as `draft` and sets `needs-review` when its research is done. You review, edit and set `approved`. A build agent starts only after your explicit go, keeps it `approved` while building to the acceptance criteria, then fills in the build log (PR link, deviations from the plan, follow-ups) and sets `done`. The finished spec stays as the decision record.
+  - One idea per note, linked to its project through the `project` property and from that project's index note. Living docs (project index notes, `AGENTS.md` and the spec template) stay `done` and are never archived.
+  - Distill, don't append. When new information changes a note, update it in place and say what it supersedes. Don't create duplicates.
+  - Never copy raw session transcripts into the vault; write short summaries.
+  - Keep the folder structure small. No new top-level folders without asking you.
+  - Edits can conflict when you change a note while a bot does. If a second machine also syncs the vault, such as a cron job on the dev VM, sync commits, pulls with rebase, then pushes, so nobody rewrites history or force-pushes.
   - The vault bot moves deletions to Trash and leaves archived notes' text unchanged.
   - On a new install, turn on community plugins by hand, and gitignore OS files, `.trash/` and the workspace files.
+- **Tickets a bot starts join the active sprint.** When a ticket a bot created moves to In Progress, the bot adds it to the current active sprint.
+- **Bots clean up their scratch copies.** Once the work is done or merged, a bot deletes its scratch clones and worktrees without asking. It never touches your own checkouts.
+- **Bot output is your output.** Work the bots do under your name counts as your own, in reports, rollups and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
-- **Optional coding split.** For larger multi-file changes, the owning bot can write a spec for a long-lived coding-assistant session to implement, then handle everything around it: pushes, PRs, review, tickets and notes. Bots never close or restart a running session.
+- **Optional coding split.** For larger multi-file changes, the owning bot can write a spec for a long-lived coding-assistant session to implement, then handle everything around it: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
 
 ## Shared skills worth copying
 
-Shared skills are written once and every bot can load them. These five are generic. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
+Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These five are generic. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
 
 ### pr-review-loop
 
@@ -371,7 +404,7 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 2. **The reviewer reviews adversarially.** It checks correctness against the real API and source, precedent, a minimal diff, breaking changes for callers, and parity across sibling PRs. It cites file and line for every finding and writes long findings to a handoff file (with byte count and sha). It sends them to the coordinator bot (Orchestrator) only and stays silent in its own chat.
 3. **The coordinator tells the human.** It distills the findings into plain words with a proposed fix for each, and uses a question card when a decision is needed. The owner and reviewer don't message the human directly about handed-off work.
 4. **No fix without the human's OK.** The coordinator relays the human's exact approval to the owner, and the owner pushes only what was approved. Delta-review only if the follow-up is itself large or uncertain.
-5. **Finish.** Tell the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words.
+5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words.
 6. **Keep it quiet.** Don't post PR comments or replies on GitHub unless the human asked for that exact text. An engineer bot posts one audit-log line in its own chat only for the first concrete deliverable (for example, the PR opened), not for follow-up commits.
 
 ### vault-write
@@ -390,7 +423,7 @@ Use when one API or feature change has to land in several libraries (SDKs) at on
 1. Write one spec first in a handoff file: the ticket, exact API fields and types (checked against the API source or docs, not guessed), which libraries need code changes, and open questions. Loose-dict libraries usually need none.
 2. Find precedent in each repo and copy its shape.
 3. Write each change to the [code style](#code-style) and the repo's own precedent.
-4. Do one repo end to end first, then work the rest against the spec, in parallel when it helps: one branch and one draft PR per repo.
+4. Do one repo end to end first, then work the rest against the spec, in parallel when it helps: one short-lived worker per repo, each in its own worktree with the spec, and one branch and one draft PR per repo.
 5. Run each repo's lint, format check and tests locally, then push and wait for CI.
 6. Send all the PRs to the reviewer at once for a parity check, then follow pr-review-loop.
 7. Report a table of repo, PR, status, CI and open questions. Nothing public-facing goes out without the human's words.
@@ -405,13 +438,13 @@ Use when a library needs a version bump, changelog entry and release, for one li
 4. Run build, lint and tests, and check that CI is green.
 5. Send it through the review loop, and get the human's words before it's marked ready or merged.
 6. Tagging, the GitHub release and publishing need the human's explicit go-ahead. Report release links and registry versions afterward. Report odd registry dist-tags rather than changing them.
-7. Before releasing: on the default branch, CI green, the tag doesn't exist yet, and every version location is correct. Create the GitHub release under your account, with a `v` tag, the changelog entry as the body, marked latest, and never as a draft or prerelease. Let CI publish. You handle registry auth and dist-tags.
+7. Before releasing: on the default branch, CI green, the tag doesn't exist yet, and every version location is correct. Create the GitHub release under your account, with a `v` tag, the changelog entry as the body, marked latest, and never as a draft or prerelease. Let CI publish. You handle registry auth and dist-tags. Releases for several libraries can run in parallel once these checks pass.
 
 ### ticket-implement
 
 Use when the human asks a bot to implement a ticket.
 
-1. Move the ticket to In Progress, and implement it as written.
+1. Move the ticket to In Progress, add it to the current active sprint if a bot created it, and implement it as written.
 2. Open a **draft** PR (never merge) with the ticket key in the title, so it shows in the tracker's development panel. Add a web link to the PR on the ticket.
 3. When the PR is ready for the human's review, move the ticket to In Review and leave a short comment on what changed: files, intent and the PR URL.
 4. Create a one-shot GitHub routine scoped to that PR, triggered on `pr-merged` and `pr-closed`. On merge, move the ticket to Done, comment that it merged, and tell the human through Orchestrator. On close without merge, tell the human only. The routine deletes itself after it fires.
@@ -432,6 +465,8 @@ Cadence rules first, because they matter more than any single routine:
 - Only work that would block your day runs hourly or faster. Everything else runs once a day at most, or once a week when that's enough.
 - Weekdays only, during working hours. Nothing runs after 5 PM; it waits for the next workday.
 - **No blind polling.** Use an event trigger (a GitHub PR event or a Slack message) wherever one exists.
+- **Weekly is the default for upkeep.** Housekeeping routines, such as the setup backup's upkeep and session summaries, run weekly unless you need them fresher. Daily is for things you read daily, such as the recap and the morning nudge.
+- **Don't add a routine just to watch usage;** it would use usage itself. Fold that check into a routine that already runs.
 - **Cheap check first, then exit quietly.** Start with the cheapest check that rules out work (is the machine reachable, did anything change). End without any messages when there's nothing new. If a machine it needs is offline, stop and retry at most once a day.
 
 The routines (times are in your own zone):
@@ -518,7 +553,7 @@ This run does not message Justin. Obsidian reports to Orchestrator in Grok Bot o
 ```text
 Give Justin a brief end-of-day recap of today's work (his local day, in his time zone). Rollup runs daily before this recap and logs the solid deliverables (tickets, PRs, docs written) to his accomplishments notes. Use Rollup's list for the deliverables: read its latest message to me or today's Rollup transcript, and keep that part to one or two compact lines with links. Don't redo Rollup's work. My job is the in-between detail that Rollup doesn't capture.
 
-Sources: my own conversation with Justin today, my journal memory and open todos, and today's transcripts from his active bots (Client Libs Engineer, Docs Engineer, DevEnv Engineer, Adversarial Reviewer, Obsidian, Rollup). Ask a bot directly only if its transcript can't be read.
+Sources: my own conversation with Justin today, my journal memory and open todos, and today's transcripts from his active bots (Client Libs Engineer, Docs Engineer, DevEnv Engineer, Platform Engineer, Adversarial Reviewer, Researcher, Obsidian, Rollup). Ask a bot directly only if its transcript can't be read.
 
 Cover these short sections, a few bullets each at most:
 1. Deliverables (from Rollup): a compact list with links. If Rollup hasn't run or skipped sources because his Mac was off, say so.
@@ -585,7 +620,7 @@ Ground rules: I'm Obsidian, the only bot that writes to the vault. Message no ot
 3. Summarize each kept session the same way as the backfill:
    - Condense related sessions into one note.
    - Skip trivial sessions or ones with no outcome.
-   - Write notes directly into the vault's projects/<repo>/ as <date> <repo> <topic>.md with status: done (the only allowed statuses are draft, needs-review, approved and done).
+   - Write notes directly into the vault's projects/<repo>/ as <date> <repo> <topic>.md with status: done (the only allowed statuses are draft, needs-review, approved, done and blocked).
    - Every note needs status/repo/created/source frontmatter plus project: "[[<repo>]]".
    - Link each note from its repo index note, and create a new index note (status: done) when a repo is new.
    - Repo naming: use the repo's name, for example dotfiles. Each client library gets its own folder named after its repo, and a note that spans several libraries goes in projects/general. Never use a combined client-libraries folder.
@@ -593,7 +628,7 @@ Ground rules: I'm Obsidian, the only bot that writes to the vault. Message no ot
 4. Record the processed sessions in the state file, plus a marker showing this week's Pass 1 is done. Delete any temp files you create on the Mac.
 
 ## Pass 2 (box, Mondays even when the Mac is offline): Grok Bot sessions
-1. Load the Grok Bot session state file on my computer. The bots, by full id: Orchestrator, Client Libs Engineer, Docs Engineer, DevEnv Engineer, Adversarial Reviewer, Researcher, Obsidian (me) [ids omitted here]. Rollup is excluded. Ignore the pilot record; it never moves markers.
+1. Load the Grok Bot session state file on my computer. The bots, by full id: Orchestrator, Client Libs Engineer, Docs Engineer, DevEnv Engineer, Platform Engineer, Adversarial Reviewer, Researcher, Obsidian (me) [ids omitted here]. Rollup is excluded. Ignore the pilot record; it never moves markers.
 2. Window: from each bot's read_through (if null, the first position on or after 2026-11-02 00:00 in his time zone) up to the last position before 00:00 this Monday, in his time zone.
 3. Read the transcripts myself in the main run, not in a subagent; a subagent can't read my own transcript. Page ReadTranscript (in = full id, limit 30, before) with write_to_file. After every page, run the ingest script with the work dir and that exact file; it checks the header's bot id, digests the page and deletes it. Pass explicit file names only, never a glob over the shared tool-output folder; other agents' files live there. If a header says "this session" for another bot, stop that bot and report it.
 4. Run the digest script's group step with the work dir, the window start and end, and a cap of 25. Drop any group already covered by a draft in the drafts folder's pending/ or written/ (same artifacts or same source positions). Save the over-cap groups as deferred in the state file so they're drafted on later runs instead of lost. Process deferred groups first, oldest first, and keep each run's total at 25 or fewer.
@@ -669,6 +704,11 @@ Current as of 2026-11-10. Running today.
 - **Machines:** the work laptop is registered with the app and holds `gh`, git over SSH, the client-library checkouts and the vault. Most other company repos live on the company dev VM, reached from the laptop over SSH.
 - **Avatars:** Orchestrator blob/black, Obsidian square/violet, Rollup blob/orange, Adversarial Reviewer sparkle/red, Researcher no shape/magenta. The engineers are all stars: Client Libs Engineer green, Docs Engineer blue, Platform Engineer gray, DevEnv Engineer no color.
 - **Settings:** every bot has notifications for agent updates on. Globally, auto-update when idle is on and notifications are off. The laptop's local-tool permission is "always", and the registered phone's is "ask".
+- **Open questions:**
+  - A fully always-on home, so the team no longer depends on the work laptop being awake.
+  - Whether the reorg actually cut usage.
+  - Whether the researcher saves more hops than it adds.
+  - Whether each owner should write its own vault folder directly, with sha guards, instead of every write going through the vault bot. Not adopted; all writes still go through the vault bot.
 - **Code review:** repos on the company's separate code-review tool use that tool's own branch and review commands instead of git push and a GitHub PR.
 
 ### Personal account
