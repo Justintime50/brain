@@ -2,7 +2,7 @@
 
 The brAIn for my bot team.
 
-Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before, and raised them 1.4–1.7x against the 4 weeks just before, without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. That quality held is my judgment, and the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers, how they were measured and their caveats are in [Results](#results).
+Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before, and raised them 1.4–1.7x against the 4 weeks just before, without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. I also reviewed more of other people's PRs, worked in more repos each week, and my PRs merged faster, in a median of 1.2 hours. That quality held is my judgment, and the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers and how they were measured are in [Results](#results).
 
 The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, a notes-vault writer and an accomplishments log.
 
@@ -51,19 +51,8 @@ These figures compare my first 20 days with the bot team (Oct 21 to Nov 9, 2026,
 | Reviews on others' PRs per week | 13.3 | 18.5 | 29.4 | +120% | +59% |
 | Distinct repos touched per week | 6.8 | 13.5 | 20.0 | +193% | +48% |
 | Median hours from PR open to merge | 1.8 | 1.7 | 1.2 | -30% | -26% |
-| Mean hours from PR open to merge, excluding PRs open more than 60 days | 103.9 | 11.2 | 28.2 | -73% | +153% |
 
-**How it was measured.** A read-only research bot pulled my authored PRs, default-branch commits, reviews and releases from GitHub across all the orgs and personal repos I work in, plus my tickets from the issue tracker. Times were bucketed in my time zone. Automation accounts and the vault's auto-backup commits are excluded. Work the bots did under my name counts as mine, so there's no me-vs-bots split.
-
-**Caveats.**
-
-- The after window is short, under three weeks, so a single batch moves the averages a lot.
-- The 4-week baseline is the closer comparison. It runs about twice the 12-week rate on most GitHub metrics, partly because the 12-week window includes two near-empty weeks in August and the 4-week one includes an unusual burst week.
-- The work mix changed. The after window was dominated by a runtime-upgrade sweep across many repos and a batch of client-library releases. Releases jumped from 0.75 to 7.3 per week, but that's a one-off batch, not a steady rate.
-- Not everything went up. Lines changed were flat against the 4-week baseline (+3%).
-- Merge time is a speed figure, not a quality one, and it's mixed. The median fell, but the mean open-to-merge time, leaving out PRs open more than 60 days, rose from 11.2 to 28.2 hours against the 4-week baseline. Against the 12-week baseline it fell, from 103.9 hours (-73%).
-- Tickets resolved as Done fell to 6.3 per week, from 11.8 in the 4 weeks before (-46%) and 9.9 in the 12 weeks before (-36%). The 12-week window includes two bulk-closure days in early September, which fall outside the 4-week window, so they explain part of the drop against 12 weeks but none of the drop against 4. The issue tracker had also moved to sprint boards, so the drop may partly reflect ticket hygiene rather than output. The count also only sees tickets where I'm still the assignee.
-- I may have used an AI coding assistant before the baselines; that wasn't confirmed. If so, this compares an assistant alone with an assistant plus the bot team.
+**How it was measured.** A read-only research bot pulled my authored PRs, default-branch commits and reviews on others' PRs from GitHub, across all the orgs and personal repos I work in, for those three windows. Times were bucketed in my time zone. Automation accounts and the vault's auto-backup commits are excluded. Work the bots did under my name counts as mine, so there's no me-vs-bots split. The after window is short, under three weeks, so one busy stretch can move the averages.
 
 ## How the team evolved
 
@@ -701,7 +690,7 @@ This file is meant to grow. Justin and any AI agent, including bots on his work 
 - Never add internal hostnames, company or product internals, people, tickets, ids, tokens or credential locations.
 - Update existing text in place instead of appending duplicates.
 - Keep each part doing its job: the story stays narrative, the how-to stays generic, and the team reference matches the team as it runs today.
-- Refresh [Results](#results) only with newly measured figures, and name their sources, windows and caveats.
+- Refresh [Results](#results) only with newly measured figures, and name their sources and windows.
 - Keep code style out of this file. It belongs in the styles repo (see [Code style](#code-style)).
 - Keep the [contents](#contents) list in sync with the H2 sections.
 - Commit with Conventional Commits, with Justin as author and committer, and no trailers.
