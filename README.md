@@ -2,7 +2,7 @@
 
 The brAIn for my bot team.
 
-Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables compared with the 12 weeks before, without sacrificing quality. In my first three weeks with the team, I opened about 3x as many pull requests per week (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against only the 4 weeks before, the gain is smaller: 62% more PRs opened, 42% more merged and 72% more commits. Quality held up. The median time from opening a PR to merging it fell from 1.8 to 1.2 hours, and bots never merge, so every PR still goes through my review. The numbers, how they were measured and their caveats are in [Results](#results).
+Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before, and raised them 1.4–1.7x against the 4 weeks just before, without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. That quality held is my judgment, and the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers, how they were measured and their caveats are in [Results](#results).
 
 The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, a notes-vault writer and an accomplishments log.
 
@@ -51,6 +51,7 @@ These figures compare my first 20 days with the bot team (Oct 21 to Nov 9, 2026,
 | Reviews on others' PRs per week | 13.3 | 18.5 | 29.4 | +120% | +59% |
 | Distinct repos touched per week | 6.8 | 13.5 | 20.0 | +193% | +48% |
 | Median hours from PR open to merge | 1.8 | 1.7 | 1.2 | -30% | -26% |
+| Mean hours from PR open to merge, excluding PRs open more than 60 days | 103.9 | 11.2 | 28.2 | -73% | +153% |
 
 **How it was measured.** A read-only research bot pulled my authored PRs, default-branch commits, reviews and releases from GitHub across all the orgs and personal repos I work in, plus my tickets from the issue tracker. Times were bucketed in my time zone. Automation accounts and the vault's auto-backup commits are excluded. Work the bots did under my name counts as mine, so there's no me-vs-bots split.
 
@@ -59,7 +60,9 @@ These figures compare my first 20 days with the bot team (Oct 21 to Nov 9, 2026,
 - The after window is short, under three weeks, so a single batch moves the averages a lot.
 - The 4-week baseline is the closer comparison. It runs about twice the 12-week rate on most GitHub metrics, partly because the 12-week window includes two near-empty weeks in August and the 4-week one includes an unusual burst week.
 - The work mix changed. The after window was dominated by a runtime-upgrade sweep across many repos and a batch of client-library releases. Releases jumped from 0.75 to 7.3 per week, but that's a one-off batch, not a steady rate.
-- Not everything went up. Lines changed were flat against the 4-week baseline (+3%). The mean open-to-merge time, leaving out PRs open more than 60 days, rose from 11.2 to 28.2 hours against that baseline, even though the median fell. Tickets resolved as Done fell to 6.3 per week (-46% vs 4 weeks, -36% vs 12), which may reflect earlier bulk ticket closures rather than output.
+- Not everything went up. Lines changed were flat against the 4-week baseline (+3%).
+- Merge time is a speed figure, not a quality one, and it's mixed. The median fell, but the mean open-to-merge time, leaving out PRs open more than 60 days, rose from 11.2 to 28.2 hours against the 4-week baseline. Against the 12-week baseline it fell, from 103.9 hours (-73%).
+- Tickets resolved as Done fell to 6.3 per week, from 11.8 in the 4 weeks before (-46%) and 9.9 in the 12 weeks before (-36%). The 12-week window includes two bulk-closure days in early September, which fall outside the 4-week window, so they explain part of the drop against 12 weeks but none of the drop against 4. The issue tracker had also moved to sprint boards, so the drop may partly reflect ticket hygiene rather than output. The count also only sees tickets where I'm still the assignee.
 - I may have used an AI coding assistant before the baselines; that wasn't confirmed. If so, this compares an assistant alone with an assistant plus the bot team.
 
 ## How the team evolved
@@ -159,7 +162,7 @@ You talk to one bot, the **Orchestrator**. It answers quick asks itself, hands a
 | Bot | Kind | Owns |
 | --- | --- | --- |
 | Orchestrator | Coordinator | Your quick asks, routing, tracking, daily recaps. Read-only ticket work, plus Slack and email reads, summaries and drafts. |
-| Libraries Engineer | Engineer | A set of related code repos, for example your SDKs or client libraries: changes, cross-repo parity, releases and the PR work. |
+| Client Libs Engineer | Engineer | A set of related code repos, for example your SDKs or client libraries: changes, cross-repo parity, releases and the PR work. |
 | Docs Engineer | Engineer | Your docs repos and knowledge-base lookups. Answers how-to questions with sources and does the docs PR work. |
 | DevEnv Engineer | Engineer | Your dev environment: dotfiles, the dotfiles sync tool, editor and AI-tool config, your dev VM, and dev or deploy tooling. |
 | Platform Engineer | Engineer | Every other project repo that isn't one of the lanes above. |
@@ -197,10 +200,10 @@ Replace `{owner}` with your name and the bracketed placeholders with your own re
 #### Orchestrator
 
 ```text
-{owner}'s main point of contact, boss and liaison. Always free for quick ad hoc asks, I hand anything lengthy to the right engineer (Libraries Engineer, Docs Engineer, DevEnv Engineer, Platform Engineer) or cross-cutting bot (Adversarial Reviewer, Researcher, Obsidian, Rollup), track it, and bring results back in one place. I also own {owner}'s read-only ticket work and their Slack and email reads, summaries and drafts.
+{owner}'s main point of contact, boss and liaison. Always free for quick ad hoc asks, I hand anything lengthy to the right engineer (Client Libs Engineer, Docs Engineer, DevEnv Engineer, Platform Engineer) or cross-cutting bot (Adversarial Reviewer, Researcher, Obsidian, Rollup), track it, and bring results back in one place. I also own {owner}'s read-only ticket work and their Slack and email reads, summaries and drafts.
 ```
 
-#### Libraries Engineer
+#### Client Libs Engineer
 
 ```text
 I own {owner}'s [client libraries / SDKs] and their examples repo: code changes, cross-library parity, version bumps, releases, and the PR work for them (opening, describing, CI, review follow-ups) with gh and git. For changes across several libraries I write one shared spec, then work each repo against it, in parallel when it helps. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. I follow the code style in [your style-guide repo]. Dotfiles and the dev environment belong to DevEnv Engineer.
@@ -221,7 +224,7 @@ I own {owner}'s development environment: their dotfiles repo, the dotfiles sync 
 #### Platform Engineer
 
 ```text
-I'm Platform Engineer, {owner}'s coding bot for project repos that aren't their dev environment, the docs, or the client libraries. Lane boundaries: Libraries Engineer owns the libraries; Docs Engineer owns the docs; DevEnv Engineer owns dotfiles and machine setup. If work crosses lanes, I do my part and flag the rest to Orchestrator.
+I'm Platform Engineer, {owner}'s coding bot for project repos that aren't their dev environment, the docs, or the client libraries. Lane boundaries: Client Libs Engineer owns the libraries; Docs Engineer owns the docs; DevEnv Engineer owns dotfiles and machine setup. If work crosses lanes, I do my part and flag the rest to Orchestrator.
 
 How I work: Orchestrator is my only contact for {owner}. They don't read my chat, so every question, decision or result goes to Orchestrator. I take handed-off tasks, do them end to end, and report back with PR links and a short plain summary. Bigger plans, and larger or uncertain code, go to Adversarial Reviewer first (the pr-review-loop skill). For cross-system research I can ask Researcher.
 
@@ -664,18 +667,18 @@ This is the only section for per-account details. Keep it generic too: name the 
 
 ### Work account
 
-Running today.
+Current as of 2026-11-10. Running today.
 
 - **Bots:** all nine from [Team structure](#team-structure).
   - Orchestrator also owns read-only issue-tracker work and Slack and work-email reads, summaries and drafts.
-  - Libraries Engineer owns the company's client libraries (SDKs) and their examples repo.
+  - Client Libs Engineer owns the company's client libraries (SDKs) and their examples repo.
   - Docs Engineer owns the company docs repo and lookups in the company knowledge base.
   - DevEnv Engineer owns the dotfiles, the dotfiles sync tool, editor and AI-tool config, the company dev VM, and the company's dev and deploy tooling.
   - Platform Engineer owns every other company repo.
   - Obsidian manages the work vault. Rollup keeps the work accomplishments notes.
 - **Connectors:** GitHub, work Gmail, the company Slack workspace, the company issue tracker and wiki, Google Drive and Google Docs, plus X. Tool lockdowns are as in [Connectors to set up](#connectors-to-set-up).
 - **Machines:** the work laptop is registered with the app and holds `gh`, git over SSH, the client-library checkouts and the vault. Most other company repos live on the company dev VM, reached from the laptop over SSH.
-- **Avatars:** Orchestrator blob/black, Obsidian square/violet, Rollup blob/orange, Adversarial Reviewer sparkle/red, Researcher no shape/magenta. The engineers are all stars: Libraries Engineer green, Docs Engineer blue, Platform Engineer gray, DevEnv Engineer no color.
+- **Avatars:** Orchestrator blob/black, Obsidian square/violet, Rollup blob/orange, Adversarial Reviewer sparkle/red, Researcher no shape/magenta. The engineers are all stars: Client Libs Engineer green, Docs Engineer blue, Platform Engineer gray, DevEnv Engineer no color.
 - **Settings:** every bot has notifications for agent updates on. Globally, auto-update when idle is on and notifications are off. The laptop's local-tool permission is "always", and the registered phone's is "ask".
 - **Code review:** repos on the company's separate code-review tool use that tool's own branch and review commands instead of git push and a GitHub PR.
 
