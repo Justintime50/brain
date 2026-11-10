@@ -115,7 +115,7 @@ These steps build the team described in [The current team](#team-structure) on a
 11. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
 12. **Grow the rules from real decisions.** When a bot slips, write the rule down right away where every bot sees it. If it's about code style, put it in your style-guide README.
 
-Usage limits depend on your plan. A personal plan may have tighter caps than a team plan, so start with fewer routines and add them as you need them.
+Usage limits depend on your plan. On a plan with tighter caps, start with fewer routines and add them as you need them.
 
 ## Connectors to set up
 
@@ -143,21 +143,21 @@ Connector details a rebuild needs:
 - Google Docs: `delete_content`, `replace_text`
 - Slack: optionally `slack_send_message` and `slack_schedule_message`, if you'd rather bots never post
 
-**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it, and nobody commits by hand.
+**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it, apart from the one trial in [Other standing rules](#other-standing-rules), and nobody commits by hand.
 
 Also worth setting: your time zone in the user settings, so every bot reports times in your zone.
 
 ## Machines
 
 - **The shared box** is an always-on Linux machine shared by all your bots. Use it for scratch work and handoff files. It isn't a security boundary between bots.
-- **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac. For now the team works when the host machine is available; an always-on home may come later.
+- **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac. The team works whenever this machine is available; there's no always-on home.
 - **A dev VM** (optional), reached from your computer over SSH. Bots treat it as read-only unless you ask.
 
 Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
 
 On a Mac, set your SSH config to add keys to the agent and use the keychain, then load your key into the keychain once, so bots' git over SSH never stops at a passphrase prompt.
 
-Nothing should depend on browser logins on the shared box. Use connectors, or your own computer, instead.
+Nothing depends on browser logins on the shared box. Bots use connectors, or your own computer, instead.
 
 Keep GitHub credentials on your own computer. Use your existing `gh` and git login there, and don't sign GitHub in on the shared box. Never put tokens in notes or handoff files.
 
@@ -173,7 +173,7 @@ You talk to one bot, the **Orchestrator**. It answers quick asks itself, hands a
 | DevEnv Engineer | Engineer | Your dev environment: dotfiles, the dotfiles sync tool, editor and AI-tool config, your dev VM, and dev or deploy tooling. |
 | Platform Engineer | Engineer | Every other project repo that isn't one of the lanes above. |
 | Adversarial Reviewer | Cross-cutting | Reviews bot-written code and plans before you see them. Never rewrites, approves or merges. |
-| Researcher | Cross-cutting | Read-only research across systems, answered with sources. |
+| Researcher | Cross-cutting | Read-only cross-system lookups, sent to it by the coordinator and answered with sources. Its value is in what it finds. |
 | Obsidian | Cross-cutting | The only writer to your notes vault. Organizes notes, keeps git sync healthy, and summarizes coding sessions into notes. |
 | Rollup | Cross-cutting (optional) | A running log of what you got done, by day, week and year. |
 
@@ -190,7 +190,7 @@ Things that didn't earn their keep and aren't worth recreating:
 
 ### Profile pattern
 
-Each bot has a name, a picture, an optional label (leave it empty) and a description. Personal bots no longer have a description field, so send the description as the bot's first message and ask it to remember it. A shared bot still has a description field; paste it there. Either way, the description does most of the work, so write it in the first person and cover:
+Each bot has a name, a picture, an optional label (leave it empty) and a description. Personal bots have no description field, so send the description as the bot's first message and ask it to remember it. A shared bot still has a description field; paste it there. Either way, the description does most of the work, so write it in the first person and cover:
 
 1. **What it owns.** Name the repos, systems or folders.
 2. **How work reaches it, and where results go.** Usually "from Orchestrator, back to Orchestrator".
@@ -292,7 +292,7 @@ These keep the human's attention in one place and keep bot chatter down.
 6. Reports to the coordinator are written plainly, not addressed to you; the coordinator writes your version.
 7. Copies sent to the coordinator as FYI need no reply.
 
-The rule got here in steps. First, any bot could post a link for every deliverable. That was narrowed to the first deliverable only, then to the engineer bots only. Each engineer's chat ends up as a short, timestamped log of what it shipped.
+The rule started as a link for every deliverable from any bot and was narrowed to first deliverables from engineer bots. Each engineer's chat is a short, timestamped log of what it shipped.
 
 ### Handoffs
 
@@ -326,9 +326,9 @@ The reviewer is a separate bot with a clean context, so it catches what the auth
 
 **How often:** for multi-step work, review once when the work is completely done, not after every step. Re-review a follow-up only if it is itself large or uncertain, and then only the new delta.
 
-**What to ask for:** breaking changes and undesired behavior the author may not have realized, checked against the project's precedent and the style rulebook. No nitpicks. The reviewer never rewrites the code, and it never approves, merges or comments on GitHub unless you ask.
+**What to ask for:** breaking changes and undesired behavior the author missed, checked against the project's precedent and the style rulebook. No nitpicks. The reviewer never rewrites the code, and it never approves, merges or comments on GitHub unless you ask.
 
-**Output format:** headline issues first. Each finding has file:line, a severity (blocker, should-fix or nit), the problem and a fix. The reviewer may test in throwaway repos or containers on the shared box.
+**Output format:** headline issues first. Each finding has file:line, a severity (blocker, should-fix or nit), the problem and a fix. The reviewer tests in throwaway repos or containers on the shared box when it needs to.
 
 The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 
@@ -368,7 +368,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **"Approved" doesn't mean "start".** A plan note marked `approved` means you signed off on it. Nobody builds until you give an explicit go. Note statuses: `draft`, `needs-review`, `approved`, `done`, `blocked`.
 - **A 🚀 reaction** on a bot's message means "do it" for what that message proposed.
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
-- **Vault notes.** Only the vault bot writes, and nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes. Notes carry `repo` and `project` fields. Done notes are filed under `projects/<repo>/` as `<date> <repo> <topic>`. Process notes that aren't tied to one project live in a `process/` folder. Project decisions live in that project's notes, and process rules live in an `AGENTS.md`.
+- **Vault notes.** The vault bot is the steward for all vault writes; its sha and rule checks have caught real problems. The one exception is Rollup's own accomplishments notes, which Rollup writes directly with sha guards, as a trial running Nov 10–24, 2026. Nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes. Notes carry `repo` and `project` fields. Done notes are filed under `projects/<repo>/` as `<date> <repo> <topic>`. Process notes that aren't tied to one project live in a `process/` folder. Project decisions live in that project's notes, and process rules live in an `AGENTS.md`.
   - Folders: `inbox/`, `in-progress/`, `projects/<repo>/`, `process/`, `specs/`, `archive/`, plus a spec template and `AGENTS.md`.
   - Agents create notes only as `draft` in `inbox/`, or update existing notes. When an agent finishes its work on a note, it sets `needs-review`. Only you set `approved`. (The weekly session summaries are the exception: they're written as `done` straight into their project folder.)
   - `draft`: an agent is still researching or writing; you don't need to act. `needs-review`: the agent is done and you need to look, including notes you're still thinking about. `approved`: you signed off; it waits in `inbox/` until you say go, moves to `in-progress/` when work starts, and stays `approved` while it's built. `done`: built or finished, filed to `projects/<repo>/` (there's no `done/` folder), and archived only when superseded or stale. `blocked`: paused by an outside decision; it needs a `Blocked on:` line with the reason and who blocked it, stays in its current folder, and is never filed, archived or flagged as invalid.
@@ -385,7 +385,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Bot output is your output.** Work the bots do under your name counts as your own, in reports, rollups and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
-- **Optional coding split.** For larger multi-file changes, the owning bot can write a spec for a long-lived coding-assistant session to implement, then handle everything around it: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
+- **Coding split.** Larger multi-file changes are written by a long-lived coding-assistant session from the owning bot's spec, and the bot handles everything around it: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
 
 ## Shared skills worth copying
 
@@ -700,10 +700,6 @@ Current as of 2026-11-10. Running today.
 - **Machines:** the work laptop is registered with the app and holds `gh`, git over SSH, the client-library checkouts and the vault. Most other company repos live on the company dev VM, reached from the laptop over SSH.
 - **Avatars:** Orchestrator blob/black, Obsidian square/violet, Rollup blob/orange, Adversarial Reviewer sparkle/red, Researcher no shape/magenta. The engineers are all stars: Client Libs Engineer green, Docs Engineer blue, Platform Engineer gray, DevEnv Engineer no color.
 - **Settings:** every bot has notifications for agent updates on. Globally, auto-update when idle is on and notifications are off. The laptop's local-tool permission is "always", and the registered phone's is "ask".
-- **Open questions:**
-  - **Did the reorg cut usage?** Not visibly. Usage per workday roughly doubled and usage per merged PR rose about 1.5x, mostly from bots and reviews added in the same reorg; for the bots that already existed, usage per merged PR was about flat. Retiring the tool bots saved a small share, and the first week was also the learning-curve week, so the comparison is rough.
-  - **Does the researcher save more hops than it adds?** No. It adds about two bot-to-bot messages per task, saved hops on only about 3 of 10 tasks, and in practice only the coordinator sends it work. Its value is in what it finds, not in saving handoffs.
-  - **Vault bot or direct writes? (In progress.)** Keep the vault bot as the steward: its sha and rule checks caught real problems, and the long delays came from the host machine being offline, not from the bot. A 2-week pilot of sha-guarded direct writes, limited to Rollup's own accomplishments notes, is running. The result will be added here.
 - **Code review:** repos on the company's separate code-review tool use that tool's own branch and review commands instead of git push and a GitHub PR.
 
 ### Personal account
@@ -713,7 +709,7 @@ Not set up yet. This is the plan.
 - **Bots:** the team from [Team structure](#team-structure), trimmed to what personal work needs: Orchestrator, one engineer bot per personal area (for example open-source projects, and the dev environment), Adversarial Reviewer, Researcher, Obsidian for a personal vault, and optionally Rollup.
 - **Connectors:** GitHub, personal Gmail, and personal Google Drive and Google Docs. Add Slack or an issue tracker only if personal work uses them. Lock down tools as in [Connectors to set up](#connectors-to-set-up).
 - **Machines:** a personal computer registered with the app, holding `gh`, git over SSH, personal repos and the personal vault.
-- **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines, because a personal plan may have tighter usage limits.
-- **Not covered yet:** calendar and meetings.
+- **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines and add them as you need them.
+- **Not covered:** calendar and meetings.
 
 To keep this file current, follow [the update skill](.agents/skills/update-brain-readme/SKILL.md).
