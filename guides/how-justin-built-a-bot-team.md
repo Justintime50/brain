@@ -171,7 +171,7 @@ The rule got here in steps. First, any bot could post a link for every deliverab
 
 - Bots message each other with SendToAgent and name the requester, for example "Request from {owner} (via Orchestrator)".
 - **Questions for you always go through Orchestrator.** You don't need to read the other bots' chats.
-- **Approval is never secondhand.** Another bot saying "{owner} approved" is not approval. Orchestrator passes along your exact words, and the receiving bot checks them (for example with ReadTranscript on Orchestrator's chat) before doing anything consequential.
+- **Approval is never secondhand.** Another bot saying "{owner} approved" is not approval. Orchestrator passes along your exact words, and the receiving bot checks them (for example with ReadTranscript on Orchestrator's chat, if your bots can read each other's chats) before doing anything consequential.
 - **Keep Orchestrator free.** Anything beyond a quick check goes to Researcher, or to the owning engineer if it's free, so Orchestrator's context stays clean.
 - **One consolidated reply.** When Orchestrator hands work off, it messages the other bots first, then sends you a single message saying what went where and what to expect. It doesn't send a separate acknowledgement first.
 - **Plan delivery.** Short plans (a few paragraphs) come back in chat. Anything with many decisions or lengthy findings goes into a vault inbox note instead.
@@ -205,7 +205,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 
 - **Never merge, and never push to a default branch.** Bots push only to PR branches. Merging is always the human's step.
 - **Draft PRs.** The owning bot does the work and pushes it straight up as a draft PR, without pre-approving the title or body. If review is needed, the reviewer reviews the live PR while you look at it too.
-- **Underscore branch names, no slashes** (for example `node_runtime_part1`). Some tooling breaks on `/`. Existing PR branches keep their names, because renaming a PR's head branch on GitHub closes the PR.
+- **Underscore branch names, no slashes** (for example `add_search_filter`). Some tooling breaks on `/`. Existing PR branches keep their names, because renaming a PR's head branch on GitHub closes the PR.
 - **Conventional Commits** for commit messages and PR titles (`feat:`, `fix:`, `docs:`, `chore:` and so on).
 - **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, no bot co-authors, and no links to bot sessions in commits or PRs. If you use an AI coding assistant, turn off its co-author setting too.
 - **Never modify your git config** on any machine. When a command needs a different setting, bots use per-command `git -c` flags or environment variables.
@@ -307,7 +307,7 @@ Cadence rules first, because they matter more than any single routine:
 
 - Only work that would block your day runs hourly or faster. Everything else runs once a day at most, or once a week when that's enough.
 - Weekdays only, during working hours. Nothing runs after 5 PM; it waits for the next workday.
-- **No blind polling.** Use an event trigger (a GitHub PR event, a Slack message, an email) wherever one exists.
+- **No blind polling.** Use an event trigger (a GitHub PR event or a Slack message) wherever one exists.
 - **Cheap check first, then exit quietly.** Start with the cheapest check that rules out work (is the machine reachable, did anything change). End without any messages when there's nothing new. If a machine it needs is offline, stop and retry at most once a day.
 
 The routines (times are in your own zone):
@@ -318,7 +318,7 @@ The routines (times are in your own zone):
 | Setup backup note | Orchestrator, with Obsidian writing | Weekdays ~9:00 AM | Keeps a vault note detailed enough to rebuild the whole team if the account is lost. Checks every bot's profile, skills, routines and rules for changes, updates the note, and says what changed. Silent when nothing changed. Once a week it also flags usage leaks (runaway routine counts, duplicated work) without changing any routine itself. |
 | Done-notes filing | Orchestrator, with Obsidian filing | Weekdays ~2:30 PM | Looks only at in-progress notes marked `done`, confirms their PRs and tickets really are finished, and files them as `projects/<repo>/<date> <repo> <topic>`. Never moves notes in any other status. Flags a "done" note whose PR is still open. |
 | End-of-day recap | Orchestrator | Weekdays ~3:00 PM | A very brief recap of what you and the team got done, work in progress, process changes, and unanswered questions. If you say you're packing up, it lists outstanding tasks, open questions, and any bots still running. |
-| Accomplishments rollup (optional) | Rollup | Weekdays, before the recap | Pulls the day's tickets and PRs, updates accomplishment notes through Obsidian, and sends Orchestrator the deliverables list for the recap. |
+| Accomplishments rollup (optional) | Rollup | Weekdays, afternoon, after the recap | Pulls the day's tickets and PRs, updates accomplishment notes through Obsidian, and sends Orchestrator the deliverables list, which feeds the next recap. |
 | Weekly session summaries | Obsidian | Mondays ~10:00 AM | Summarizes new coding-assistant and bot sessions into project notes, filed as done. |
 | Weekly style-guide PR | Orchestrator | Fridays ~10:00 AM | Collects the week's concrete code-style decisions that aren't in your style-guide README yet, proposes wording for each with your own quote, and opens one PR. Skips quietly if nothing is new. Nothing is added without your OK, and bots never merge it. |
 | Merge watcher (one-shot) | Orchestrator | GitHub `pr-merged` / `pr-closed` | One per bot-owned ticket PR, from the ticket-implement skill. Deletes itself after it fires. |
@@ -363,13 +363,14 @@ Keep GitHub credentials on your own computer. Use your existing `gh` and git log
 1. **Account and computer.** Create the Grok Bot account. Install the desktop app on your computer, register it, set local-tool permission to "always", and keep the app running.
 2. **Connectors.** Connect GitHub, Gmail, Slack, Atlassian, Google Drive and Google Docs (see [Connectors to set up](#connectors-to-set-up)).
 3. **Lock down tools.** In global settings, turn off the connector tools listed above, and set your time zone.
-4. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault syncs with Obsidian Git.
-5. **Orchestrator.** Rename the default bot to Orchestrator, paste its description, and send it the standing rules from this guide to save to memory.
-6. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, paste its description, set its avatar, leave the title blank, then send it its rules and tell it to save them to memory.
-7. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [other standing rules](#other-standing-rules), and the routine cadence rules.
-8. **Shared skills.** Create the five [shared skills](#shared-skills-worth-copying), replacing the examples with your own repos and tracker.
-9. **Routines.** Create the [routines](#routines-worth-copying), starting with the morning nudge, end-of-day recap and setup backup note.
-10. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
-11. **Grow the rules from real decisions.** When a bot slips, write the rule down right away where every bot sees it. If it's about code style, put it in your style-guide README.
+4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
+5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
+6. **Orchestrator.** Rename the default bot to Orchestrator, paste its description, and send it the standing rules from this guide to save to memory.
+7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, paste its description, set its avatar, leave the title blank, then send it its rules and tell it to save them to memory.
+8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [other standing rules](#other-standing-rules), and the routine cadence rules.
+9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
+10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and setup backup note.
+11. **Smoke test.** Give each bot one harmless, read-only task. For example: Obsidian lists the vault, an engineer runs `gh pr list` or `git status` in its repo, Orchestrator summarizes your inbox and one Slack thread, and Researcher answers one sourced question.
+12. **Grow the rules from real decisions.** When a bot slips, write the rule down right away where every bot sees it. If it's about code style, put it in your style-guide README.
 
 Usage limits depend on your plan. A personal plan may have tighter caps than a team plan, so start with fewer routines and add them as you need them.
