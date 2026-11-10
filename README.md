@@ -74,7 +74,7 @@ Lessons from that path:
 - Measure a team change. Compare usage and hop counts about two weeks after a reorg, and split a lane only if one area is clearly a bottleneck.
 - Keep one human approval gate. Nothing ships, posts or gets fixed without the human's OK.
 - A clean-context reviewer bot is worth having. Ask it what would break, not for polish.
-- Give each shared resource, such as the notes vault, a single writer.
+- Give each shared resource, such as the notes vault, a single writer. This team's one exception is a sha-guarded trial for Rollup's own notes (see [Other standing rules](#other-standing-rules)).
 - Bot-to-bot hops cost usage and attention. Idle bots are free. Cut relay hops first.
 - Give the human one inbox: every bot's questions go through the coordinator.
 - Run routines only as often as someone will act on them.
@@ -108,7 +108,7 @@ These steps build the team described in [The current team](#team-structure) on a
 4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
 5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
 6. **Orchestrator.** Rename your primary bot to Orchestrator, send its [description](#ready-to-paste-descriptions) as a message and ask it to remember it, then send it the standing rules from this guide to save to memory.
-7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, create it with its name and picture, send its description as the bot's first message and ask it to remember it, leave the label empty, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
+7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)). Rollup and the reviewer depend on the others. For each bot, create it with its name and picture, send its description as the bot's first message and ask it to remember it, leave the label empty, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
 8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [code style](#code-style) link, the [other standing rules](#other-standing-rules), and the routine cadence rules.
 9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
 10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and setup backup note.
@@ -173,11 +173,11 @@ You talk to one bot, the **Orchestrator**. It answers quick asks itself, hands a
 | DevEnv Engineer | Engineer | Your dev environment: dotfiles, the dotfiles sync tool, editor and AI-tool config, your dev VM, and dev or deploy tooling. |
 | Platform Engineer | Engineer | Every other project repo that isn't one of the lanes above. |
 | Adversarial Reviewer | Cross-cutting | Reviews bot-written code and plans before you see them. Never rewrites, approves or merges. |
-| Researcher | Cross-cutting | Read-only cross-system lookups, sent to it by the coordinator and answered with sources. Its value is in what it finds. |
-| Obsidian | Cross-cutting | The only writer to your notes vault. Organizes notes, keeps git sync healthy, and summarizes coding sessions into notes. |
-| Rollup | Cross-cutting (optional) | A running log of what you got done, by day, week and year. |
+| Researcher | Cross-cutting | Read-only cross-system lookups, answered with sources. Any bot can send it work; in practice the coordinator sends nearly all of it. Its value is in what it finds. |
+| Obsidian | Cross-cutting | The only writer to your notes vault (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)). Organizes notes, keeps git sync healthy, and summarizes coding sessions into notes. |
+| Rollup | Cross-cutting (optional) | A running log of what you got done, by day, week and year. During the Nov 10–24, 2026 trial, it writes its own accomplishments notes directly with sha guards. |
 
-Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one writer for shared notes.
+Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one writer for shared notes (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)).
 
 **When to add a bot or split a lane.** Start with the smallest useful roster. Add a bot only when the work has a stable specialist role: its own goal or area, tools and sources, approval boundary or schedule. Split a sub-area into its own owner only once it has its own rules and schedule, or its own steady stream of work. Until then a second bot mostly duplicates memory and adds hops.
 
@@ -385,7 +385,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Bot output is your output.** Work the bots do under your name counts as your own, in reports, rollups and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
-- **Coding split.** Larger multi-file changes are written by a long-lived coding-assistant session from the owning bot's spec, and the bot handles everything around it: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
+- **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
 
 ## Shared skills worth copying
 
@@ -405,7 +405,7 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 
 ### vault-write
 
-Use when any bot needs to create or change a note in the vault, where only the vault bot may write.
+Use when any bot needs to create or change a note in the vault, where only the vault bot may write (except Rollup's own notes during the Nov 10–24, 2026 trial; see [Other standing rules](#other-standing-rules)).
 
 1. **Ask the vault bot for the change.** Say which note (its target path in the vault, or new), what should change, and why. Include any source material it needs. For a new note or a requested word-for-word replacement, put the full content in a handoff file, with the frontmatter the vault expects (such as `repo`, `project` and `status`), and its byte count and sha256 (`wc -c` and `sha256sum`). Otherwise describe the change and let the vault bot do the edit and keep the note's structure and frontmatter.
 2. **The vault bot makes the edit.** It updates any index or project page that should link the note and reads the file back to verify. It never commits by hand: the vault's Obsidian Git plugin auto-commits, pushes and pulls.
@@ -484,7 +484,7 @@ The backup note names credentials only by location and never holds their values.
 
 ### Routine reference
 
-Each routine's full saved prompt is below. The prompts are kept word for word, except where they named internal systems, paths, ids or retired bots; those were generalized. Placeholders such as `<repo>`, `<n>`, `<ticket>` and `<KEY>` are part of the template.
+Each routine's full saved prompt is below. The prompts are kept word for word, except where they named internal systems, paths, ids or retired bots; those were generalized. Placeholders such as `<repo>`, `<n>`, `<ticket>` and `<KEY>` are part of the template. The [accomplishments rollup](#accomplishments-rollup) prompt reflects that routine as it runs outside the Nov 10–24, 2026 trial; during the trial, Rollup writes its own notes directly with sha guards instead of through the vault bot.
 
 #### Morning nudge
 
