@@ -12,7 +12,7 @@ This README does three jobs at once:
 - **Technical instructions** anyone can follow to build their own: [Step-by-step setup](#step-by-step-setup), [Connectors to set up](#connectors-to-set-up) and [Machines](#machines).
 - **A backup and the current state of my team,** enough to recreate it: every bot's ready-to-paste description, the rules, the shared skills and the routines with their full prompts, from [Team structure](#team-structure) through [Routines worth copying](#routines-worth-copying), plus the per-account details in [Account-specific setup](#account-specific-setup).
 
-Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [How to update this](#how-to-update-this).
+Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [the update skill](.agents/skills/update-brain-readme/SKILL.md).
 
 ## Contents
 
@@ -36,8 +36,6 @@ Nothing outside [Account-specific setup](#account-specific-setup) is tied to one
   - [Routines worth copying](#routines-worth-copying)
 - **Per account**
   - [Account-specific setup](#account-specific-setup)
-- **Maintaining this file**
-  - [How to update this](#how-to-update-this)
 
 ## Results
 
@@ -721,16 +719,4 @@ Not set up yet. This is the plan.
 - **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines, because a personal plan may have tighter usage limits.
 - **Not covered yet:** calendar and meetings.
 
-## How to update this
-
-This file is meant to grow. Justin and any AI agent, including bots on his work and personal Grok Bot accounts and other agents, can add findings here as they discover them. When you do:
-
-- Keep the body generic, so it works for any account.
-- Put account-specific setup only in [Account-specific setup](#account-specific-setup).
-- Never add internal hostnames, company or product internals, people, tickets, ids, tokens or credential locations.
-- Update existing text in place instead of appending duplicates.
-- Keep each part doing its job: the story stays narrative, the how-to stays generic, and the team reference matches the team as it runs today.
-- Refresh [Results](#results) only with newly measured figures, and name their sources and windows.
-- Keep code style out of this file. It belongs in the styles repo (see [Code style](#code-style)).
-- Keep the [contents](#contents) list in sync with the H2 sections.
-- Commit with Conventional Commits, with Justin as author and committer, and no trailers.
+To keep this file current, follow [the update skill](.agents/skills/update-brain-readme/SKILL.md).
