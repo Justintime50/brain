@@ -500,9 +500,9 @@ Routine prompts live only inside the routines, and only the owning bot can read 
 
 ### Rolling README PRs
 
-The brain README and the styles README stay current through one rolling draft PR each:
+The brain README and the styles README stay current through one rolling PR each, opened as a draft:
 
-- **Daily brain README PR.** Weekdays around 3 PM (the owner's end of day), the coordinator gathers that day's process and team changes and has the dev-env bot commit them on top of the one open rolling brain PR. If none is open, it opens a new draft PR. It stays quiet unless something is blocked.
+- **Daily brain README PR.** Weekdays around 3 PM (the owner's end of day), the coordinator gathers that day's process and team changes and has the dev-env bot commit them on top of the one open rolling brain PR. If none is open, it opens a new draft PR. It leaves an existing PR's draft or ready state alone. It stays quiet unless something is blocked.
 - **Daily styles README PR.** The same flow for the styles repo at the same time, starting from the pending styles list and committing from your own GitHub account on your computer.
 - **Friday brain and styles PRs ready.** Fridays around 3:45 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges; bots never merge.
 - **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, never opens a second rolling PR, and never force-pushes. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
@@ -680,7 +680,7 @@ Each weekday run:
    - Link the styles repo instead of repeating code style.
    - Keep verbatim prompt and profile copies identical to the live text.
    - No secrets, and no employer-specific details in the public README.
-   - Commit as Justintime50 with no trailers. Never force-push, never merge, and keep the PR a draft. DevEnv deletes its clone afterward.
+   - Commit as Justintime50 with no trailers. Never force-push or merge. Open any new PR as a draft, and leave an existing PR's draft or ready state alone (the Friday routine marks it ready). DevEnv deletes its clone afterward.
    Use Adversarial Reviewer only for large, nuanced or uncertain changes, once, at the end.
 5. Don't message Justin on daily runs unless something is blocked or needs his decision. The Friday routine tells him the PRs are ready.
 
