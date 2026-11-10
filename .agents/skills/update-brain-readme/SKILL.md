@@ -13,6 +13,9 @@ description: Use when adding to, correcting or restructuring this repo's README.
 - Update existing text in place instead of appending duplicates.
 - Keep each part doing its job: the story stays narrative, the how-to stays generic, and the team reference matches the team as it runs today.
 - Refresh [Results](../../../README.md#results) only with newly measured figures, and name their sources and windows.
+- Write the current state with brief historical context, in official, certain wording. No Q&A or open-questions sections, and no back-and-forth narration.
+- Keep word-for-word copies, such as routine prompts and bot descriptions, identical to the live text. Mark any part generalized for the public README as noted.
+- No secrets, dollar amounts or employer-specific details. Employer specifics go in a private brain doc (see [Private brain docs](../../../README.md#private-brain-docs)).
 - Keep code style out of the README. It belongs in the styles repo (see [Code style](../../../README.md#code-style)).
 - Keep the [contents](../../../README.md#contents) list in sync with the H2 sections.
 - Commit with Conventional Commits, with Justin as author and committer, and no trailers.

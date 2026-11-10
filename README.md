@@ -407,12 +407,20 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 
 ### vault-write
 
-Use when any bot needs to create or change a note in the vault, where only the vault bot may write (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)).
+Use when any bot needs to create or change a note in the vault, where only the vault-owner bot may write (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)).
 
-1. **Ask the vault bot for the change.** Say which note (its target path in the vault, or new), what should change, and why. Include any source material it needs. For a new note or a requested word-for-word replacement, put the full content in a handoff file, with the frontmatter the vault expects (such as `repo`, `project` and `status`), and its byte count and sha256 (`wc -c` and `sha256sum`). Otherwise describe the change and let the vault bot do the edit and keep the note's structure and frontmatter.
-2. **The vault bot makes the edit.** It updates any index or project page that should link the note and reads the file back to verify. It never commits by hand: the vault's Obsidian Git plugin auto-commits, pushes and pulls.
-3. **The vault bot reports back** with the final path, and the sha when it was a verbatim write.
+1. **Ask the vault-owner bot for the change.** Say which note it is (its target path in the vault, or that it's new), what should change, and why. Include any source material it needs. For a new note or a requested word-for-word replacement, put the full content in a handoff file with its byte count and sha256. Otherwise describe the change and let the vault owner make the edit and keep the note's structure and frontmatter.
+2. **The vault owner makes the edit.** It updates any index or project page that should link the note, then reads the file back to verify. It never commits by hand: the vault's Obsidian Git plugin auto-commits, pushes and pulls.
+3. **The vault owner reports back** with the final path, plus the sha when it was a verbatim write.
 4. **Confirm to the human** with the vault path. Never put secrets (tokens, keys, passwords) in a vault note.
+
+**Exception: a direct-write trial the human granted.** The human may grant a time-boxed exception that lets one named bot write one named set of files directly (check memory for an active one and its end date). While it's active, only that bot, and only for those files, skips steps 1-3:
+
+- Read the file and note its state.
+- Before writing, check that the file hasn't changed since you read it. If it has (the human or the vault owner edited it), merge the changes instead of overwriting.
+- Log every write where the trial says to.
+
+Everything else in the vault still goes through the vault owner. Once the trial ends or is reverted, this exception no longer applies.
 
 ### multi-library-change
 
@@ -483,9 +491,9 @@ The routines (times are in your own zone):
 | [Accomplishments rollup](#accomplishments-rollup) (optional) | Rollup | Weekdays ~2:30 PM, before the recap |
 | Velocity report (optional) | Rollup | Every four weeks |
 | [Weekly session summaries](#weekly-session-summaries) | Obsidian | Mondays ~10:00 AM, with a Tue–Fri noon fallback |
-| Daily brain README PR ([process](#rolling-readme-prs)) | Orchestrator, with the dev-env bot committing | Weekdays ~3:00 PM |
-| Daily styles README PR ([process](#rolling-readme-prs)) | Orchestrator | Weekdays ~3:00 PM |
-| Friday brain and styles PRs ready ([process](#rolling-readme-prs)) | Orchestrator | Fridays ~3:45 PM |
+| [Daily brain README PR](#daily-brain-readme-pr) ([process](#rolling-readme-prs)) | Orchestrator, with the dev-env bot committing | Weekdays ~3:00 PM |
+| [Daily styles README PR](#daily-styles-readme-pr) ([process](#rolling-readme-prs)) | Orchestrator | Weekdays ~3:00 PM |
+| [Friday brain and styles PRs ready](#friday-brain-and-styles-prs-ready) ([process](#rolling-readme-prs)) | Orchestrator | Fridays ~3:45 PM |
 | [Merge watcher](#merge-watcher) (one-shot) | Orchestrator | GitHub `pr-merged` / `pr-closed` |
 
 Routine prompts live only inside the routines, and only the owning bot can read them back. This README keeps each routine's full prompt text, trigger or schedule, and owner in the [routine reference](#routine-reference), and the daily brain README PR updates it whenever a routine changes. Copies name credentials only by location, never their values.
@@ -501,7 +509,7 @@ The brain README and the styles README stay current through one rolling draft PR
 
 ### Routine reference
 
-Each routine's saved prompt as of 2026-11-10 is below, word for word except where they named internal systems, paths, ids or retired bots; those were generalized. Placeholders such as `<repo>`, `<n>`, `<ticket>` and `<KEY>` are part of the template. The three rolling-PR routines are described in [Rolling README PRs](#rolling-readme-prs) rather than copied. The [accomplishments rollup](#accomplishments-rollup) prompt reflects that routine outside Rollup's vault trial (see [Other standing rules](#other-standing-rules)).
+Each routine's saved prompt as of 2026-11-10 is below, word for word except where they named internal systems, paths, ids or retired bots; those were generalized. Placeholders such as `<repo>`, `<n>`, `<ticket>` and `<KEY>` are part of the template. Each copy names any part generalized beyond that. The [accomplishments rollup](#accomplishments-rollup) prompt reflects that routine outside Rollup's vault trial (see [Other standing rules](#other-standing-rules)).
 
 #### Morning nudge
 
@@ -640,6 +648,88 @@ A short summary to Justin in this Grok Bot chat:
 - Grok Bot: groups found, drafted, deferred and blocked; drafts written to the vault; any bot that couldn't be read.
 - Notable open threads or coding-assistant gotchas.
 If nothing is new, send one line saying so. A fallback with nothing owed sends nothing. Message no one else.
+```
+
+#### Daily brain README PR
+
+- **Owner:** Orchestrator, with DevEnv Engineer committing
+- **Schedule:** weekdays ~3:00 PM in your time zone (your end of day), flexible
+- **Copy:** word for word except where noted: the retired vault folder's name, the private brain doc's file name and vault, the box folders for bot profiles and skills, the pending styles list's path, and the time zone are generalized.
+- **Prompt:**
+
+```text
+Keep the Justintime50/brain README current. As of 2026-11-10 it's the single source of truth for Justin's bot team: its process, setup, rules, routines, and how bots hand work to each other, plus brief history. It replaced the vault's process notes and serves as the rebuild backup if his account is lost. It's augmented by a private note, the private brain doc at the root of his work Obsidian vault, which holds work-specific private details (credential names and locations, never values; hosts; internal tools; rebuild specifics).
+
+Justin's words (2026-11-10): "Collect things daily and update the PRs. On Friday afternoon, mark the PRs as ready for review and tell me they're ready, I'll review and merge so the brain and styles are always up to date." Also: "Regardless of which grok account is in use, they can both commit to brain and styles (in the case of a work and personal grok account being setup), since they'll both share them. So both (or however many) accounts will be contributing to the rolling weekly PRs to update brain and styles." Runs at 3 PM in his time zone, his end of day.
+
+Each weekday run:
+1. Find the open rolling brain PR (e.g. brain#1, or a later `brain_updates_*` draft), whichever Grok account or bot team opened it. Other Grok accounts' bots may also push to it. Always pull its latest head first, never assume you're the only contributor, and never open a second rolling PR while one is open.
+2. Gather this team's changes since that head from:
+   - each bot's profile and settings in the box's bot folder
+   - user skills in the box's skills folder
+   - my own routines
+   - shared and own memory facts learned since then
+   - recent transcripts of every bot: new or changed routines, standing rules, connectors and machines, and bots added or removed
+   Sort what you find. Generic process and team-setup items go to the README. Work-specific private details go to the private brain doc: hand those edits to Obsidian in Grok Bot, since it owns the vault. Code-style items go to the pending styles list for the styles routine. Skip anything another account already added.
+3. If nothing changed, stop quietly.
+4. Otherwise, follow the update-brain-readme skill (and the repo's `.agents/skills/update-brain-readme/SKILL.md`, which wins on conflict). Hand the exact README edits to DevEnv Engineer in Grok Bot to commit:
+   - Add the commit on top of the open PR's latest head. If no PR is open, open a new draft PR off the latest default branch, with an underscore-only branch name like `brain_updates_2026_11_12`.
+   - Where two accounts' setups differ, describe both rather than overwrite one.
+   - Write the README as an official, confident current-state guide with brief historical context. No Q&A, hedging or back-and-forth.
+   - Highlight only AI-attributable gains, and include no dollar amounts.
+   - Link the styles repo instead of repeating code style.
+   - Keep verbatim prompt and profile copies identical to the live text.
+   - No secrets, and no employer-specific details in the public README.
+   - Commit as Justintime50 with no trailers. Never force-push, never merge, and keep the PR a draft. DevEnv deletes its clone afterward.
+   Use Adversarial Reviewer only for large, nuanced or uncertain changes, once, at the end.
+5. Don't message Justin on daily runs unless something is blocked or needs his decision. The Friday routine tells him the PRs are ready.
+
+Who hears about it: DevEnv Engineer and Obsidian, plus Adversarial Reviewer when warranted, get the work in Grok Bot. Justin, in this chat, hears only about blockers or decisions. If nothing changed, or his Mac is offline, stay quiet and try again next run.
+```
+
+#### Daily styles README PR
+
+- **Owner:** Orchestrator
+- **Schedule:** weekdays ~3:00 PM in your time zone (your end of day), flexible
+- **Copy:** word for word except where noted: the Mac's machine name, the handoff folder paths, and the time zone are generalized.
+- **Prompt:**
+
+```text
+Justin asked (Nov 3, 2026): "Weekly, check back on what we discussed and if there are any concrete code style specific decisions not documented, propose adding them to my styles repo readme so we can keep that up to date." On Nov 10, 2026 he moved it to daily: "Collect things daily and update the PRs. On Friday afternoon, mark the PRs as ready for review and tell me they're ready, I'll review and merge so the brain and styles are always up to date." Also: "Regardless of which grok account is in use, they can both commit to brain and styles (in the case of a work and personal grok account being setup), since they'll both share them. So both (or however many) accounts will be contributing to the rolling weekly PRs to update brain and styles." Runs at 3 PM in his time zone, his end of day.
+
+Each weekday run:
+1. Check that Justin's Mac is reachable. If it isn't, skip quietly.
+2. Read the current README of Justintime50/styles (https://github.com/Justintime50/styles). Find the open rolling styles PR, whichever Grok account or bot team opened it. Pull its latest head first, since other accounts' bots may also push to it, and never open a second rolling PR while one is open.
+3. Gather code-style decisions since that head:
+   - Start with the pending styles list, which holds wording already shown to Justin.
+   - Then look at this chat, the other bots' transcripts, shared and own memory facts learned since then, and the review files in the handoff folder.
+4. Keep only concrete, generally applicable code-style decisions Justin made in his own words that neither the README nor the open PR already covers: formatting, naming, shell and script style, CI conventions, testing, error handling, dependency and version pinning, simplicity. Skip project-specific facts, bot process or workflow rules (those go to the brain repo), docs prose style, and one-off choices. When a new rule supersedes or conflicts with an existing README line, edit that line rather than adding a contradiction.
+5. If there's nothing new, stop quietly.
+6. Otherwise, on Justin's Mac, using his personal GitHub account:
+   - If a rolling PR is open, add one commit on top of its latest head and update the PR description list.
+   - If none is open, create an underscore-only branch (e.g. `style_updates_2026_11_12`) off the latest default branch, make one commit in the existing README style, push it, and open a DRAFT PR whose description lists each change with its source (date and Justin's quote).
+   - Never push to or merge the default branch, never touch git config (use `-c` flags), never force-push, and don't mark it ready (the Friday routine does that).
+7. Clear the pending styles list of the entries included.
+
+Who hears about it: no one on daily runs, unless something is blocked or needs Justin's decision, in which case tell Justin in this Grok Bot chat. The Friday routine tells him the PR is ready.
+```
+
+#### Friday brain and styles PRs ready
+
+- **Owner:** Orchestrator
+- **Schedule:** Fridays ~3:45 PM in your time zone, after the daily runs, up to 15 min late
+- **Copy:** word for word except where noted: the time zone is dropped.
+- **Prompt:**
+
+```text
+Justin's words (2026-11-10): "On Friday afternoon, mark the PRs as ready for review and tell me they're ready, I'll review and merge so the brain and styles are always up to date." Several of Justin's Grok accounts (e.g. work and personal) may contribute to the same rolling PRs. This runs after the 3 PM daily brain and styles runs.
+
+Each Friday:
+1. Find the open rolling draft PR on Justintime50/brain and the one on Justintime50/styles, whichever Grok account opened them.
+2. Make sure today's daily updates from this team have landed. If one is still in progress, wait for it or note it.
+3. If a PR is already marked ready (another account may have done it), leave it. Otherwise mark each open draft ready for review, on Justin's Mac with his personal GitHub account or through GitHub. Never merge, approve or force-push.
+4. Tell Justin in this Grok Bot chat, in one short message, which PRs are ready, with links and a one-line summary of what each holds. If another account already told him, still send a brief one-liner, but don't repeat the details.
+If neither repo has an open PR with changes, send nothing.
 ```
 
 #### Merge watcher
