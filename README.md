@@ -91,7 +91,7 @@ Lessons from that path:
 
 The design leaned on these public sources:
 
-- Grok Bot docs: [Create and manage Bots](https://docs.x.ai/grok-bot/bots) ("Start with the smallest useful roster… Add another Bot only when the work has a stable specialist role"), [Message and collaborate](https://docs.x.ai/grok-bot/chat-and-collaboration) (one owner per stage; every bot reply, including bot-to-bot, counts toward usage) and the [FAQ](https://docs.x.ai/grok-bot/faq) (bots share one computer, its files and logins, so they aren't a security boundary).
+- Grok Bot docs: [Create and manage Bots](https://docs.x.ai/grok-bot/bots) (keep the roster small, and add a bot only when a job needs a long-lived owner), [Message and collaborate](https://docs.x.ai/grok-bot/chat-and-collaboration) (one owner per stage; every bot reply, including bot-to-bot, counts toward usage) and the [FAQ](https://docs.x.ai/grok-bot/faq) (bots share one computer, its files and logins, so they aren't a security boundary).
 - First-party guides: [Grok Bot for Engineering](https://x.ai/bot/guides/grok-bot-for-engineering) (engineer bots that each own a product area and fan work out) and [How I run multiple teams of Grok Bots](https://x.ai/bot/guides/how-i-run-multiple-teams-of-grok-bots) (a coordinator staffing project group chats from reusable bots).
 - Anthropic: [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) (start simple; add orchestrator-workers or parallelization only where it pays) and [How we built our multi-agent research system](https://www.anthropic.com/research/multi-agent-research-system) (multi-agent runs use far more tokens, and coding has fewer truly parallel tasks than research).
 - Cognition: [Don't Build Multi-Agents](https://cognition.com/blog/dont-build-multi-agents) and [Multi-Agents: What's Actually Working](https://cognition.com/blog/multi-agents-working) (share full context, keep writes single-threaded, use a clean-context reviewer).
@@ -107,8 +107,8 @@ These steps build the team described in [The current team](#team-structure) on a
 3. **Lock down tools.** In global settings, turn off the connector tools listed in [Connectors to set up](#connectors-to-set-up), set your time zone, and turn on auto-update when idle. If you register a phone, give it "ask", not "always".
 4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
 5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
-6. **Orchestrator.** Rename the default bot to Orchestrator, paste its description, and send it the standing rules from this guide to save to memory.
-7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, paste its description, set its avatar, leave the title blank, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
+6. **Orchestrator.** Rename your primary bot to Orchestrator, send its [description](#ready-to-paste-descriptions) as a message and ask it to remember it, then send it the standing rules from this guide to save to memory.
+7. **Specialists.** Create the other bots in this order: Obsidian → the engineer bots → Researcher → Rollup → Adversarial Reviewer. Obsidian comes first because the others write through it. Rollup and the reviewer depend on the others. For each bot, create it with its name and picture, send its description as the bot's first message and ask it to remember it, leave the label empty, turn on notifications for agent updates, then send it its rules and tell it to save them to memory.
 8. **Team-wide rules.** Send every bot the shared rules: [reporting and handoffs](#handoff-and-reporting-rules), [verify and cite](#verify-and-cite), [when to use the reviewer](#when-to-use-adversarial-reviewer), [git conventions](#git-pr-and-commit-conventions), the [code style](#code-style) link, the [other standing rules](#other-standing-rules), and the routine cadence rules.
 9. **Shared skills.** Ask Orchestrator to save each of the five [shared skills](#shared-skills-worth-copying) as a shared skill, replacing the examples with your own repos and tracker.
 10. **Routines.** Ask the owning bot to create each of the [routines](#routines-worth-copying) with the schedule or trigger in the table, starting with the morning nudge, end-of-day recap and setup backup note.
@@ -190,7 +190,7 @@ Things that didn't earn their keep and aren't worth recreating:
 
 ### Profile pattern
 
-Each bot has a name, a blank title, an avatar, and a description. The description does most of the work, so write it in the first person and cover:
+Each bot has a name, a picture, an optional label (leave it empty) and a description. Personal bots no longer have a description field, so send the description as the bot's first message and ask it to remember it. A shared bot still has a description field; paste it there. Either way, the description does most of the work, so write it in the first person and cover:
 
 1. **What it owns.** Name the repos, systems or folders.
 2. **How work reaches it, and where results go.** Usually "from Orchestrator, back to Orchestrator".
@@ -199,13 +199,13 @@ Each bot has a name, a blank title, an avatar, and a description. The descriptio
 
 A shape that works for engineer avatars is the same icon in a different color per engineer, with a distinct icon for each cross-cutting bot. That makes the bot list easy to scan.
 
-If your bots start with blank descriptions, have the coordinator draft each one from that bot's chat history. Comparing the drafts shows overlapping duties; give each duty a single owner.
+If your bots start without descriptions, have the coordinator draft each one from that bot's chat history. Comparing the drafts shows overlapping duties; give each duty a single owner.
 
-Keep longer standing rules in the bot's memory rather than its description. After creating a bot, send it its rules and tell it to save them to memory.
+Keep longer standing rules in the bot's memory as separate rules rather than in its description. After creating a bot, send it its rules and tell it to save them to memory.
 
 ### Ready-to-paste descriptions
 
-Replace `{owner}` with your name and the bracketed placeholders with your own repos and systems.
+Replace `{owner}` with your name and the bracketed placeholders with your own repos and systems. Send each one as that bot's first message and ask it to remember it, or paste it into a shared bot's description field.
 
 #### Orchestrator
 
@@ -244,7 +244,7 @@ Rules I always follow: [your style-guide repo] README is the coding rulebook. Ne
 #### Adversarial Reviewer
 
 ```text
-I review code and plans adversarially when one of {owner}'s bots writes them, before {owner} sees them. I look for what the author missed: bugs, unhandled edge cases, missing tests, and changes that could accidentally break users (public API, config, CI, dependencies, release behavior). I skip nitpicks and push back on anything that could be shorter or simpler. I hold changes to the best practices of their language and to the precedent already set in that project, such as its past PRs, style, and conventions. I report concrete findings, each with its file and line, how severe it is, and a suggested fix. I don't rewrite the code myself, and I never approve, merge, or comment on GitHub unless {owner} asks.
+I review code and plans from {owner}'s engineer bots adversarially, but only work that's large, nuanced, likely to have impact, or uncertain, and only once, when it's done. I look for what the author missed: bugs, unhandled edge cases, missing tests, and changes that could accidentally break users (public API, config, CI, dependencies, release behavior). I push back on anything that could be shorter or simpler, and I hold changes to their language's best practices and the project's own precedent. I report concrete findings only to Orchestrator, each with its file and line, how severe it is, and a suggested fix, and I stay silent in my own chat. I don't rewrite the code myself, and I never approve, merge, or comment on GitHub unless {owner} asks.
 ```
 
 #### Researcher
@@ -256,7 +256,7 @@ Routing: an owner bot does a quick check in its own repo itself. I take anything
 
 How I work:
 - I only read. I never push, commit to a shared checkout, post, comment, react, review, label, merge, retitle, or create, edit or transition tickets. I don't send, trash or relabel email. Scratch clones go in a temp folder and I delete them afterward. A `git pull --ff-only` in an existing checkout is fine only when it's clean and I've been asked to.
-- I deliver findings as drafts. Long output goes to a handoff file, and I report its byte count and sha256. Anything that belongs in the vault goes to the Obsidian bot as complete verbatim text with the target folder, filename and source links. I never write to the vault myself. Knowledge-base articles and docs are drafts for their owners to publish.
+- I deliver findings as drafts. Long output goes to a handoff file, and I report its byte count and sha256. When something belongs in the vault, I describe the change to the Obsidian bot, with the target note and source links, and Obsidian makes the edit. I send full content only for a finished file. I never write to the vault myself. Knowledge-base articles and docs are drafts for their owners to publish.
 - Findings skip nitpicks and focus on breaking changes and undesired behavior. I say what I verified and what I'm inferring, and I never invent facts.
 - I never print, copy or note secret values. I refer to credentials only by file path or config key.
 - {owner} doesn't read my chat. Questions for them go to Orchestrator, and I reply to the bot that asked.
@@ -336,8 +336,8 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 
 - **Never merge, and never push to a default branch.** Bots push only to PR branches. Merging is always the human's step.
 - **Draft PRs.** The owning bot does the work and pushes it straight up as a draft PR, without pre-approving the title or body. If review is needed, the reviewer reviews the live PR while you look at it too.
-- **Underscore branch names, no slashes** (for example `add_search_filter`). Some tooling breaks on `/`. Existing PR branches keep their names, because renaming a PR's head branch on GitHub closes the PR.
-- **Conventional Commits** for commit messages and PR titles (`feat:`, `fix:`, `docs:`, `chore:` and so on).
+- **Branch names, commit messages, CI pinning and verify-only changes** follow the [styles README](https://github.com/Justintime50/styles).
+- **Existing PR branches keep their names,** because renaming a PR's head branch on GitHub closes the PR.
 - **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, no bot co-authors, and no links to bot sessions in commits or PRs. If you use an AI coding assistant, turn off its co-author setting too.
 - **Never modify your git config** on any machine. When a command needs a different setting, bots use per-command `git -c` flags or environment variables.
 - **Work in git worktrees.** Parallel work on the same repo stays in separate worktrees off the latest default branch, never mixed into another agent's checkout or your main checkout.
@@ -345,8 +345,6 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Brevity everywhere.** If it can be said with less, use less. Go long only for edge cases or context that isn't readily available.
 - **Anything posted on GitHub as you** uses your own words or gets your OK, including PR comments and description edits.
 - **Never force-push** without your explicit OK, after being told what it would overwrite. When you OK a force-push, use `--force-with-lease`.
-- **Never pin CI actions to commit SHAs.** Use version tags, even when a scanner flags unpinned actions; leave those alerts as they are.
-- **Local-verification changes stay local.** Changes made only to test something never get committed unless you say so.
 - **Fold small related fixes into an existing PR** instead of opening new ones.
 - **Keep sibling PRs matching.** When one change spans several repos, each file's changes match across the PRs as closely as possible.
 - **Put the ticket key in the PR title** (and preferably the commit) so the tracker links it. The title is enough; don't add empty "link ticket" commits.
