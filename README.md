@@ -701,9 +701,9 @@ Current as of 2026-11-10. Running today.
 - **Avatars:** Orchestrator blob/black, Obsidian square/violet, Rollup blob/orange, Adversarial Reviewer sparkle/red, Researcher no shape/magenta. The engineers are all stars: Client Libs Engineer green, Docs Engineer blue, Platform Engineer gray, DevEnv Engineer no color.
 - **Settings:** every bot has notifications for agent updates on. Globally, auto-update when idle is on and notifications are off. The laptop's local-tool permission is "always", and the registered phone's is "ask".
 - **Open questions:**
-  - Whether the reorg actually cut usage.
-  - Whether the researcher saves more hops than it adds.
-  - Whether each owner should write its own vault folder directly, with sha guards, instead of every write going through the vault bot. Not adopted; all writes still go through the vault bot.
+  - **Did the reorg cut usage?** Not visibly. Usage per workday roughly doubled and usage per merged PR rose about 1.5x, mostly from bots and reviews added in the same reorg; for the bots that already existed, usage per merged PR was about flat. Retiring the tool bots saved a small share, and the first week was also the learning-curve week, so the comparison is rough.
+  - **Does the researcher save more hops than it adds?** No. It adds about two bot-to-bot messages per task, saved hops on only about 3 of 10 tasks, and in practice only the coordinator sends it work. Its value is in what it finds, not in saving handoffs.
+  - **Vault bot or direct writes? (In progress.)** Keep the vault bot as the steward: its sha and rule checks caught real problems, and the long delays came from the host machine being offline, not from the bot. A 2-week pilot of sha-guarded direct writes, limited to Rollup's own accomplishments notes, is running. The result will be added here.
 - **Code review:** repos on the company's separate code-review tool use that tool's own branch and review commands instead of git push and a GitHub PR.
 
 ### Personal account
