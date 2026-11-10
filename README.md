@@ -4,13 +4,13 @@ The brAIn for my bot team.
 
 ## How I built a bot team that tripled my productivity
 
-Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before (little AI automation), and raised them 1.4–1.7x against the 4 weeks just before (attempts at AI automation), without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. I also reviewed more of other people's PRs, worked in more repos each week, and my PRs merged faster, in a median of 1.2 hours. More code delivery without an increase in Sentry errors or rollbacks - the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers and how they were measured are in [Results](#results).
+Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before (little AI automation), and raised them 1.4–1.7x against the 4 weeks just before (attempts at AI automation), without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. I also reviewed more of other people's PRs, worked in more repos each week, and my PRs merged faster, in a median of 1.2 hours. More code delivery without an increase in Sentry errors or rollbacks - the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers and how they were measured are in [Results](#results). [How velocity tripled](#how-velocity-tripled) explains why.
 
 The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, a notes-vault writer and an accomplishments log.
 
 This README does three jobs at once:
 
-- **The story** of what the team changed, how it evolved and what I learned: [Results](#results) and [How the team evolved](#how-the-team-evolved).
+- **The story** of what the team changed, how it evolved and what I learned: [Results](#results), [How velocity tripled](#how-velocity-tripled) and [How the team evolved](#how-the-team-evolved).
 - **Technical instructions** anyone can follow to build their own: [Step-by-step setup](#step-by-step-setup), [Connectors to set up](#connectors-to-set-up) and [Machines](#machines).
 - **A backup and the current state of my team,** enough to recreate it: every bot's ready-to-paste description, the rules, the shared skills and the routines with their full prompts, from [Team structure](#team-structure) through [Routines worth copying](#routines-worth-copying), plus the per-account details in [Account-specific setup](#account-specific-setup).
 
@@ -20,6 +20,7 @@ This README is the single source of truth for the team's process and setup, and 
 
 - **The story**
   - [Results](#results)
+  - [How velocity tripled](#how-velocity-tripled)
   - [How the team evolved](#how-the-team-evolved)
 - **Build your own**
   - [Step-by-step setup](#step-by-step-setup)
@@ -54,6 +55,16 @@ These figures compare my first 20 days with the bot team (Oct 21 to Nov 9, 2026,
 | Median hours from PR open to merge | 1.8 | 1.7 | 1.2 | -30% | -26% |
 
 **How it was measured.** A read-only research bot pulled my authored PRs, default-branch commits and reviews on others' PRs from GitHub, across all the orgs and personal repos I work in, for those three windows. Times were bucketed in my time zone. Automation accounts and the vault's auto-backup commits are excluded. Work the bots did under my name counts as mine, so there's no me-vs-bots split. The after window is short, under three weeks, so one busy stretch can move the averages.
+
+## How velocity tripled
+
+The increase came from the process this guide describes, not from any single rule.
+
+I talk to one coordinator and leave the rest of the work with specialist bots that each own an area end to end. Several workstreams can run at once: a change that spans several repos finishes in about the time of one, and work that needs my review goes first so I can look at it while CI runs. Review is reserved for large, nuanced or uncertain changes, and only once when the work is done; small, certain work skips it. Routines and one-shot merge watchers finish the follow-up that used to wait on me: tickets move with the code, and the day's recap arrives without anyone chasing it. Questions, results and approvals all come through one place, so I have a single inbox and a single human gate. Nothing ships without my OK.
+
+The same process also cuts waste. Bots hop less, because one owner stays with a task and only hands off what it cannot do. Rules are written down as soon as a decision is made, so the same question is not relitigated. Shared skills keep every worker on the same steps.
+
+Any one of these instructions by itself is small and insignificant, but together they become the sum of a process that unlocks greater velocity. The quality bar stayed in place: bots never merge, I review every PR, and an adversarial reviewer checks the larger changes first. Work the bots do under my name counts as mine.
 
 ## How the team evolved
 
@@ -338,7 +349,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 ## Git, PR and commit conventions
 
 - **Never merge, and never push to a default branch.** Bots push only to PR branches. Merging is always the human's step.
-- **Draft PRs.** The owning bot does the work and pushes it straight up as a draft PR, without pre-approving the title or body. If review is needed, the reviewer reviews the live PR while you look at it too.
+- **Draft PRs.** The owning bot does the work and pushes it straight up as a draft PR, without pre-approving the title or body. If review is needed, the reviewer reviews the live PR while you look at it too. Once you mark a PR ready for review, bots leave it ready and never convert it back to draft unless you ask, even while work is still going back and forth.
 - **Branch names, commit messages, CI pinning and verify-only changes** follow the [styles README](https://github.com/Justintime50/styles).
 - **Existing PR branches keep their names,** because renaming a PR's head branch on GitHub closes the PR.
 - **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, no bot co-authors, and no links to bot sessions in commits or PRs. If you use an AI coding assistant, turn off its co-author setting too.
@@ -388,6 +399,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Bots clean up their scratch copies.** Once the work is done or merged, a bot deletes its scratch clones and worktrees without asking. It never touches your own checkouts.
 - **Bot output is your output.** Work the bots do under your name counts as your own, in reports, rollups and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
+- **Logging off early.** When you say you're logging off (you'll try to warn a few minutes before shutdown), bots immediately run any routines or tasks that would have fired later that day, so they can use your computer while it's still on, and wrap up in-flight work on that machine early.
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
 - **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
 
@@ -404,7 +416,7 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 2. **The reviewer reviews adversarially.** It checks correctness against the real API and source, precedent, a minimal diff, breaking changes for callers, and parity across sibling PRs. It cites file and line for every finding and writes long findings to a handoff file (with byte count and sha). It sends them to the coordinator bot (Orchestrator) only and stays silent in its own chat.
 3. **The coordinator tells the human.** It distills the findings into plain words with a proposed fix for each, and uses a question card when a decision is needed. The owner and reviewer don't message the human directly about handed-off work.
 4. **No fix without the human's OK.** The coordinator relays the human's exact approval to the owner, and the owner pushes only what was approved. Delta-review only if the follow-up is itself large or uncertain.
-5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words.
+5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words. Once the human marks a PR ready, leave it ready; don't convert it back to draft unless they ask.
 6. **Keep it quiet.** Don't post PR comments or replies on GitHub unless the human asked for that exact text. An engineer bot posts one audit-log line in its own chat only for the first concrete deliverable (for example, the PR opened), not for follow-up commits.
 
 ### vault-write
@@ -482,12 +494,14 @@ Cadence rules first, because they matter more than any single routine:
 - **Weekly is the default for upkeep.** Housekeeping routines, such as session summaries, run weekly unless you need them fresher. Daily is for things you read daily, such as the recap and the morning nudge.
 - **Don't add a routine just to watch usage;** it would use usage itself. Fold that check into a routine that already runs.
 - **Cheap check first, then exit quietly.** Start with the cheapest check that rules out work (is the machine reachable, did anything change). End without any messages when there's nothing new. If a machine it needs is offline, stop and retry at most once a day.
+- **Logging off runs today's remaining work now.** When you say you're logging off, the coordinator fires any remaining same-day routines and tasks immediately, instead of waiting for their scheduled time.
 
 The routines (times are in your own zone):
 
 | Routine | Owner | Trigger or schedule |
 | --- | --- | --- |
 | [Morning nudge](#morning-nudge) | Orchestrator | Weekdays ~8:30 AM |
+| [Weekly brain memory audit](#weekly-brain-memory-audit) ([process](#rolling-readme-prs)) | Orchestrator | Weekdays ~9:00 AM; runs once a week (Monday, or the first weekday after last week's rolling PR merges) |
 | [Done-notes filing](#done-notes-filing) | Orchestrator, with Obsidian filing | Weekdays ~2:30 PM |
 | [End-of-day recap](#end-of-day-recap) | Orchestrator | Weekdays ~3:00 PM |
 | [Accomplishments rollup](#accomplishments-rollup) (optional) | Rollup | Weekdays ~2:30 PM, before the recap |
@@ -495,18 +509,19 @@ The routines (times are in your own zone):
 | [Weekly session summaries](#weekly-session-summaries) | Obsidian | Mondays ~10:00 AM, with a Tue–Fri noon fallback |
 | [Daily brain README PR](#daily-brain-readme-pr) ([process](#rolling-readme-prs)) | Orchestrator, with the dev-env bot committing | Weekdays ~3:00 PM |
 | [Daily styles README PR](#daily-styles-readme-pr) ([process](#rolling-readme-prs)) | Orchestrator | Weekdays ~3:00 PM |
-| [Friday brain and styles PRs ready](#friday-brain-and-styles-prs-ready) ([process](#rolling-readme-prs)) | Orchestrator | Fridays ~3:45 PM |
+| [Friday brain and styles PRs ready](#friday-brain-and-styles-prs-ready) ([process](#rolling-readme-prs)) | Orchestrator | Fridays ~3:15 PM |
 | [Merge watcher](#merge-watcher) (one-shot) | Orchestrator | GitHub `pr-merged` / `pr-closed` |
 
 Routine prompts live only inside the routines, and only the owning bot can read them back. This README keeps each routine's full prompt text, trigger or schedule, and owner in the [routine reference](#routine-reference), and the daily brain README PR updates it whenever a routine changes. Copies name credentials only by location, never their values.
 
 ### Rolling README PRs
 
-The brain README and the styles README stay current through one rolling PR each, opened as a draft:
+The brain README and the styles README stay current through one rolling PR each, opened as a draft. The README on the default branch is the source of truth once a rolling PR merges. Mid-week refinements stay in local memory and are added to the rolling PR on the daily run.
 
 - **Daily brain README PR.** Weekdays around 3 PM (the owner's end of day), the coordinator gathers that day's process and team changes and has the dev-env bot commit them on top of the one open rolling brain PR. If none is open, it opens a new draft PR. It leaves an existing PR's draft or ready state alone. It stays quiet unless something is blocked.
 - **Daily styles README PR.** The same flow for the styles repo at the same time, starting from the pending styles list and committing from your own GitHub account on your computer.
-- **Friday brain and styles PRs ready.** Fridays around 3:45 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges; bots never merge.
+- **Friday brain and styles PRs ready.** Fridays around 3:15 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges; bots never merge.
+- **Weekly brain memory audit.** Weekdays around 9 AM, the coordinator checks once a week that local memory matches the README on the default branch. The audit runs on Monday when last week's rolling PR is already merged; if that PR is still open, the coordinator tells the owner the audit is waiting and runs it on the first weekday morning after the merge. After a completed audit, the coordinator reports what drifted and what was fixed, or one line that everything matches.
 - **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, never opens a second rolling PR, and never force-pushes. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
 
 ### Routine reference
@@ -719,7 +734,7 @@ Who hears about it: no one on daily runs, unless something is blocked or needs J
 #### Friday brain and styles PRs ready
 
 - **Owner:** Orchestrator
-- **Schedule:** Fridays ~3:45 PM in your time zone, after the daily runs, up to 15 min late
+- **Schedule:** Fridays ~3:15 PM in your time zone, after the daily runs, up to 15 min late
 - **Copy:** word for word except where noted: the time zone is dropped.
 - **Prompt:**
 
@@ -732,6 +747,31 @@ Each Friday:
 3. If a PR is already marked ready (another account may have done it), leave it. Otherwise mark each open draft ready for review, on Justin's Mac with his personal GitHub account or through GitHub. Never merge, approve or force-push.
 4. Tell Justin in this Grok Bot chat, in one short message, which PRs are ready, with links and a one-line summary of what each holds. If another account already told him, still send a brief one-liner, but don't repeat the details.
 If neither repo has an open PR with changes, send nothing.
+```
+
+#### Weekly brain memory audit
+
+- **Owner:** Orchestrator
+- **Schedule:** `0 9 * * 1-5` in your time zone (weekdays ~9:00 AM), flexible ±15 min. The audit itself runs once a week: on Monday when last week's rolling PR is already merged, otherwise on the first weekday morning after it merges.
+- **Copy:** word for word except where noted: the handoff folder path is shown as `<handoff>`, and the private-doc line is generalized.
+- **Prompt:**
+
+```text
+Justin's words (2026-11-10): "Note the brain PR is merged and now is the source of truth for how the bot team works. As we refine through the week, keep that in your local memory, update the rolling PR per your schedule..., and then on mondays, audit your local memory against the (but not until rolling pr is merged) brain main branch to ensure they're in sync. This way we ensure we don't have drift between local memory/refinements and my either outstanding or solidified (via merge) brain copy on github."
+
+This runs each weekday morning, but does the audit at most once per week: on Monday, or on the first weekday after that once the previous week's rolling brain PR is merged.
+
+1. Read <handoff>/brain-audit-state.md, which records the ISO week of the last audit. If this week's audit is already done, stop quietly.
+2. Find last week's rolling brain PR on Justintime50/brain (the one the Friday routine marked ready). If it's still open, don't audit. Stop quietly, except on Monday: then tell Justin in one line in this Orchestrator chat that the audit is waiting on that PR (with its link), and re-check on later weekday mornings. If it's merged or closed, or there was no rolling PR last week, go on.
+3. Read the README on brain main (and its .agents/skills) alongside this bot's own memory (profile and journal) and the shared user memory about bot-team process.
+4. Compare them:
+   - A process rule in memory that main doesn't reflect, and that isn't queued in the current rolling PR, gets flagged for the next daily brain PR update.
+   - A memory fact that contradicts main or is superseded by it gets rewritten or forgotten to match main.
+   - Private, employer-specific items belong in the private brain doc via the vault-owner bot, not in the public README.
+5. Record this ISO week in <handoff>/brain-audit-state.md.
+6. Tell Justin in one short message what drifted and what was fixed. If nothing drifted, send one line saying memory and brain main are in sync.
+
+Never merge, force-push or approve anything.
 ```
 
 #### Merge watcher
