@@ -1,8 +1,10 @@
-# How Justin built a bot team
+# brAIn
 
 The brAIn for my bot team.
 
-Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before, and raised them 1.4–1.7x against the 4 weeks just before, without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. I also reviewed more of other people's PRs, worked in more repos each week, and my PRs merged faster, in a median of 1.2 hours. That quality held is my judgment, and the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers and how they were measured are in [Results](#results).
+## How I built a bot team that tripled my productivity
+
+Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before (little AI automation), and raised them 1.4–1.7x against the 4 weeks just before (attempts at AI automation), without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. I also reviewed more of other people's PRs, worked in more repos each week, and my PRs merged faster, in a median of 1.2 hours. More code delivery without an increase in Sentry errors or rollbacks - the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers and how they were measured are in [Results](#results).
 
 The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, a notes-vault writer and an accomplishments log.
 
@@ -12,7 +14,7 @@ This README does three jobs at once:
 - **Technical instructions** anyone can follow to build their own: [Step-by-step setup](#step-by-step-setup), [Connectors to set up](#connectors-to-set-up) and [Machines](#machines).
 - **A backup and the current state of my team,** enough to recreate it: every bot's ready-to-paste description, the rules, the shared skills and the routines with their full prompts, from [Team structure](#team-structure) through [Routines worth copying](#routines-worth-copying), plus the per-account details in [Account-specific setup](#account-specific-setup).
 
-This README is the single source of truth for the team's process and setup, and its backup and rebuild record; the vault's process notes are retired into it. Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [the update skill](.agents/skills/update-brain-readme/SKILL.md).
+This README is the single source of truth for the team's process and setup, and its backup and rebuild record. Nothing outside [Account-specific setup](#account-specific-setup) is tied to one employer. Wherever my setup points at a company system, this README uses a placeholder such as "your company's docs repo" or "your dev VM". Code style isn't covered here; it lives in my [styles repo](https://github.com/Justintime50/styles) (see [Code style](#code-style)). To add to this file, see [the update skill](.agents/skills/update-brain-readme/SKILL.md).
 
 ## Contents
 
