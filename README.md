@@ -150,7 +150,7 @@ Also worth setting: your time zone in the user settings, so every bot reports ti
 ## Machines
 
 - **The shared box** is an always-on Linux machine shared by all your bots. Use it for scratch work and handoff files. It isn't a security boundary between bots.
-- **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac.
+- **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac. For now the team works when the host machine is available; an always-on home may come later.
 - **A dev VM** (optional), reached from your computer over SSH. Bots treat it as read-only unless you ask.
 
 Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
@@ -701,7 +701,6 @@ Current as of 2026-11-10. Running today.
 - **Avatars:** Orchestrator blob/black, Obsidian square/violet, Rollup blob/orange, Adversarial Reviewer sparkle/red, Researcher no shape/magenta. The engineers are all stars: Client Libs Engineer green, Docs Engineer blue, Platform Engineer gray, DevEnv Engineer no color.
 - **Settings:** every bot has notifications for agent updates on. Globally, auto-update when idle is on and notifications are off. The laptop's local-tool permission is "always", and the registered phone's is "ask".
 - **Open questions:**
-  - A fully always-on home, so the team no longer depends on the work laptop being awake.
   - Whether the reorg actually cut usage.
   - Whether the researcher saves more hops than it adds.
   - Whether each owner should write its own vault folder directly, with sha guards, instead of every write going through the vault bot. Not adopted; all writes still go through the vault bot.
