@@ -1,4 +1,5 @@
 # How Justin built a bot team
+The brAIn for my bot team.
 
 A guide to recreating a multi-bot Grok Bot setup on a personal account: one coordinator bot you talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers. It covers the team shape, ready-to-paste bot descriptions, the rules that keep the bots safe and quiet, the shared skills and routines worth copying, and a step-by-step setup.
 
@@ -403,12 +404,8 @@ Running today.
   - DevEnv Engineer owns the dotfiles, the dotfiles sync tool, editor and AI-tool config, the company dev VM, and the company's dev and deploy tooling.
   - Platform Engineer owns every other company repo.
   - Obsidian manages the work vault. Rollup keeps the work accomplishments notes.
-- **Connectors:** GitHub, work Gmail, the company Slack workspace, Atlassian (the company issue tracker and wiki), Google Drive and Google Docs, plus X. Tool lockdowns are as in [Connectors to set up](#connectors-to-set-up).
+- **Connectors:** GitHub, work Gmail, the company Slack workspace, the company issue tracker and wiki, Google Drive and Google Docs, plus X. Tool lockdowns are as in [Connectors to set up](#connectors-to-set-up).
 - **Machines:** the work laptop is registered with the app and holds `gh`, git over SSH, the client-library checkouts and the vault. Most other company repos live on the company dev VM, reached from the laptop over SSH.
-- **Differences from the body:**
-  - Some company repos use a separate code-review tool with its own branch and submit commands instead of git push and a GitHub PR. Bots follow that tool's flow there, still as drafts with no reviewers.
-  - The vault repo is also mirrored to the dev VM on a schedule.
-  - The plan is company-managed, so usage limits differ from a personal plan.
 
 ### Personal account
 
