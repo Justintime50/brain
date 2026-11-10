@@ -16,3 +16,4 @@ description: Use when adding to, correcting or restructuring this repo's README.
 - Keep code style out of the README. It belongs in the styles repo (see [Code style](../../../README.md#code-style)).
 - Keep the [contents](../../../README.md#contents) list in sync with the H2 sections.
 - Commit with Conventional Commits, with Justin as author and committer, and no trailers.
+- Add changes to the one open rolling brain PR: pull its latest head first, commit on top, never open a second rolling PR, and never force-push. Open a new draft PR only when none is open. This applies from every Grok Bot account.
