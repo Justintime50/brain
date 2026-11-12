@@ -11,6 +11,7 @@ description: Use when adding to, correcting or restructuring this repo's README.
 - Put account-specific setup only in [Account-specific setup](../../../README.md#account-specific-setup).
 - Never add secrets, dollar amounts, internal hostnames, company or product internals, people, tickets, ids, tokens or credential locations. Employer specifics go in a private brain doc (see [Private brain docs](../../../README.md#private-brain-docs)).
 - Update existing text in place instead of appending duplicates.
+- Define each rule or concept exactly once, in the section where it fits best, and link to it from elsewhere instead of repeating it.
 - Keep each part doing its job: the story stays narrative, the how-to stays generic, and the team reference matches the team as it runs today.
 - Refresh [Results](../../../README.md#results) only with newly measured figures, and name their sources and windows.
 - Write the current state with brief historical context, in official, certain wording. No Q&A or open-questions sections, and no back-and-forth narration.
