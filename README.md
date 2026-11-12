@@ -353,6 +353,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Work in git worktrees.** Parallel work on the same repo stays in separate worktrees off the latest default branch, never mixed into another agent's checkout or your main checkout.
 - **PR descriptions are for posterity and reviewers:** what changed and why. They aren't status updates, and bot discussions stay out of them. Don't list unchanged settings unless they're needed to understand the diff.
 - **No agent links.** PR descriptions, PR comments and commits never include links to bot or agent sessions, including the coding tool's agent links and footer markers, because they can expose sensitive data. If a tool adds them, the bot removes them.
+- **Cloud coding agents only code.** A cloud coding agent does only the coding task it was given and never acts for you otherwise: it doesn't reply to reviewers, post comments or speak for you. The coordinator and the bots handle that, with your OK as usual. Bots archive each cloud agent as soon as its coding task is done, so it can't pick up later PR comments on its own, as one once did.
 - **Brevity everywhere.** If it can be said with less, use less. Go long only for edge cases or context that isn't readily available.
 - **Anything posted on GitHub as you** uses your own words or gets your OK, including PR comments and description edits.
 - **Never force-push** without your explicit OK, after being told what it would overwrite. When you OK a force-push, use `--force-with-lease`.
@@ -397,7 +398,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
 - **Logging off early.** When you say you're logging off (you'll try to warn a few minutes before shutdown), bots immediately run any routines or tasks that would have fired later that day, so they can use your computer while it's still on, and wrap up in-flight work on that machine early.
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
-- **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
+- **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes (see **Cloud coding agents only code** under [Git, PR and commit conventions](#git-pr-and-commit-conventions)). Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
 
 ## How a plan moves
 
