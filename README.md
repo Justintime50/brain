@@ -348,10 +348,11 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Draft PRs.** The owning bot does the work and pushes it straight up as a draft PR, without pre-approving the title or body. If review is needed, the reviewer reviews the live PR while you look at it too. Once you mark a PR ready for review, bots leave it ready and never convert it back to draft unless you ask, even while work is still going back and forth.
 - **Branch names, commit messages, CI pinning and verify-only changes** follow the [styles README](https://github.com/Justintime50/styles).
 - **Existing PR branches keep their names,** because renaming a PR's head branch on GitHub closes the PR.
-- **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, no bot co-authors, and no links to bot sessions in commits or PRs. If you use an AI coding assistant, turn off its co-author setting too.
+- **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, and no bot co-authors. Agent session links are covered by **No agent links** below. If you use an AI coding assistant, turn off its co-author setting too.
 - **Never modify your git config** on any machine. When a command needs a different setting, bots use per-command `git -c` flags or environment variables.
 - **Work in git worktrees.** Parallel work on the same repo stays in separate worktrees off the latest default branch, never mixed into another agent's checkout or your main checkout.
 - **PR descriptions are for posterity and reviewers:** what changed and why. They aren't status updates, and bot discussions stay out of them. Don't list unchanged settings unless they're needed to understand the diff.
+- **No agent links.** PR descriptions, PR comments and commits never include links to bot or agent sessions, including the coding tool's agent links and footer markers, because they can expose sensitive data. If a tool adds them, the bot removes them.
 - **Brevity everywhere.** If it can be said with less, use less. Go long only for edge cases or context that isn't readily available.
 - **Anything posted on GitHub as you** uses your own words or gets your OK, including PR comments and description edits.
 - **Never force-push** without your explicit OK, after being told what it would overwrite. When you OK a force-push, use `--force-with-lease`.
