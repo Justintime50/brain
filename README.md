@@ -35,6 +35,7 @@ This README is the single source of truth for the team's process and setup, and 
   - [Git, PR and commit conventions](#git-pr-and-commit-conventions)
   - [Code style](#code-style)
   - [Other standing rules](#other-standing-rules)
+  - [How a plan moves](#how-a-plan-moves)
   - [Shared skills worth copying](#shared-skills-worth-copying)
   - [Routines worth copying](#routines-worth-copying)
 - **Per account**
@@ -64,7 +65,7 @@ I talk to one coordinator and leave the rest of the work with specialist bots th
 
 The same process also cuts waste. Bots hop less, because one owner stays with a task and only hands off what it cannot do. Rules are written down as soon as a decision is made, so the same question is not relitigated. Shared skills keep every worker on the same steps.
 
-Any one of these instructions by itself is small and insignificant, but together they become the sum of a process that unlocks greater velocity. The quality bar stayed in place: bots never merge, I review every PR, and an adversarial reviewer checks the larger changes first. Work the bots do under my name counts as mine.
+Any one of these instructions by itself is small and insignificant, but together they become the sum of a process that unlocks greater velocity. The quality bar stayed in place: bots never merge, I review every PR, and an adversarial reviewer checks the larger changes first.
 
 ## How the team evolved
 
@@ -84,19 +85,17 @@ Lessons from that path:
 - More bots doesn't mean more parallelism. One owner can fan out short-lived subagents.
 - Short-lived workers beat permanent per-repo bots. Parallel writers drift unless they share full context, and every permanent bot is one more memory to keep in sync. Workers read the same spec and shared skills, then go away.
 - Fan-out spends more per task. Each parallel worker reads the spec, so a four-repo change costs more than doing it serially, but it finishes in about the time of one repo. Use it for multi-repo changes, not small edits.
-- Most usage comes from interactive work and bot-to-bot hops, not routines. Routines are only a few percent, so cutting hops saves more than trimming schedules.
+- Most usage comes from interactive work and bot-to-bot hops, not routines. Routines are only a few percent, so cutting hops saves more than trimming schedules. Idle bots are free.
 - Measure a team change. Compare usage and hop counts about two weeks after a reorg, and split a lane only if one area is clearly a bottleneck.
 - Keep one human approval gate. Nothing ships, posts or gets fixed without the human's OK.
 - A clean-context reviewer bot is worth having. Ask it what would break, not for polish.
 - Give each shared resource, such as the notes vault, a single writer (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)).
-- Bot-to-bot hops cost usage and attention. Idle bots are free. Cut relay hops first.
-- Give the human one inbox: every bot's questions go through the coordinator.
+- Give the human one inbox and one voice: every bot's questions and reports go through the coordinator.
 - Run routines only as often as someone will act on them.
 - Write rules down right after whatever prompted them, in a place every bot reads.
 - Let bots coordinate, and let a long-lived coding session write the big changes.
 - A shared read-only researcher keeps owners shipping, as long as quick checks stay with the owner.
 - Let a merge trigger finish the ticket side; status that waits on a human to remember drifts.
-- Give the human one voice to read.
 - Gate review by risk, not habit; review finished work once, and ask for sources on every claim.
 
 **Retiring a bot.** Deleting a bot erases its memory, including team facts it saved. Hide it first. Have it write its rules to a handoff file, and seed the new owner with that file (a description section plus a facts section it saves to memory). Delete it only after that.
@@ -117,8 +116,8 @@ The design leaned on these public sources:
 These steps build the team described in [The current team](#team-structure) on a fresh Grok Bot account. Swap in your own repos, systems and names as you go.
 
 1. **Account and computer.** Create the Grok Bot account. Install the desktop app on your computer, register it, set local-tool permission to "always", and keep the app running.
-2. **Connectors.** Connect GitHub, Gmail, Slack, Atlassian, Google Drive and Google Docs (see [Connectors to set up](#connectors-to-set-up)). Give Gmail the modify or trash scope, and grant the GitHub connector's app any private repos your bots need.
-3. **Lock down tools.** In global settings, turn off the connector tools listed in [Connectors to set up](#connectors-to-set-up), set your time zone, and turn on auto-update when idle. If you register a phone, give it "ask", not "always".
+2. **Connectors.** Connect GitHub, Gmail, Slack, Atlassian, Google Drive and Google Docs (see [Connectors to set up](#connectors-to-set-up) for the Gmail scope and GitHub repo grants a rebuild needs).
+3. **Lock down tools.** In global settings, turn off the connector tools listed in [Connectors to set up](#connectors-to-set-up), set your time zone so every bot reports times in your zone, and turn on auto-update when idle. If you register a phone, give it "ask", not "always".
 4. **Vault.** Create a private git repo for your Obsidian vault and clone it on your computer. Install the Obsidian Git plugin, and set it to auto commit, push and pull every 5 minutes, plus pull on open.
 5. **Check your computer.** Confirm `gh auth status` shows your account, your SSH key works, your repos are where you expect, and the vault from step 4 syncs with Obsidian Git.
 6. **Orchestrator.** Rename your primary bot to Orchestrator, send its [description](#ready-to-paste-descriptions) as a message and ask it to remember it, then send it the standing rules from this guide to save to memory.
@@ -157,15 +156,13 @@ Connector details a rebuild needs:
 - Google Docs: `delete_content`, `replace_text`
 - Slack: optionally `slack_send_message` and `slack_schedule_message`, if you'd rather bots never post
 
-**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer. The Obsidian Git plugin is set to auto commit, push and pull every 5 minutes, plus pull on open. Only the vault bot writes to it (Rollup's trial is the exception; see [Other standing rules](#other-standing-rules)), and nobody commits by hand.
-
-Also worth setting: your time zone in the user settings, so every bot reports times in your zone.
+**The vault isn't a connector.** It's a git-backed Obsidian vault in a private repo on your computer, synced by the Obsidian Git plugin (step 4 of [Step-by-step setup](#step-by-step-setup)). Who writes to it is in [Other standing rules](#other-standing-rules).
 
 ## Machines
 
 - **The shared box** is an always-on Linux machine shared by all your bots. Use it for scratch work and handoff files. It isn't a security boundary between bots.
 - **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac. The team works whenever this machine is available; there's no always-on home.
-- **A dev VM** (optional), reached from your computer over SSH. Bots treat it as read-only unless you ask.
+- **A dev VM** (optional), reached from your computer over SSH.
 
 Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
 
@@ -173,7 +170,7 @@ On a Mac, set your SSH config to add keys to the agent and use the keychain, the
 
 Nothing depends on browser logins on the shared box. Bots use connectors, or your own computer, instead.
 
-Keep GitHub credentials on your own computer. Use your existing `gh` and git login there, and don't sign GitHub in on the shared box. Never put tokens in notes or handoff files.
+Keep GitHub credentials on your own computer. Use your existing `gh` and git login there, and don't sign GitHub in on the shared box.
 
 ## Team structure
 
@@ -298,7 +295,7 @@ These keep the human's attention in one place and keep bot chatter down.
 
 ### Reporting
 
-1. Every bot reports all details, questions and status for handed-off work to Orchestrator, which distills them for you.
+1. Every bot reports all details, questions and status for handed-off work to Orchestrator, which distills them for you. You don't need to read the other bots' chats.
 2. Only the engineer bots post an audit-log line in their own chat: one short sentence with a link.
 3. They post it only for the **first** concrete deliverable of a piece of work, such as a PR opened. Follow-up commits, pushes and edits go only to Orchestrator.
 4. Non-engineer bots (Adversarial Reviewer, Researcher, Obsidian, Rollup) stay silent in their own chats for handed-off work and report only to Orchestrator.
@@ -311,7 +308,6 @@ The rule started as a link for every deliverable from any bot and was narrowed t
 ### Handoffs
 
 - Bots message each other with SendToAgent and name the requester, for example "Request from {owner} (via Orchestrator)".
-- **Questions for you always go through Orchestrator.** You don't need to read the other bots' chats.
 - **Approval is never secondhand.** Another bot saying "{owner} approved" is not approval. Orchestrator passes along your exact words, and the receiving bot checks them (for example with ReadTranscript on Orchestrator's chat, if your bots can read each other's chats) before doing anything consequential.
 - **Keep Orchestrator free.** Anything beyond a quick check goes to Researcher, or to the owning engineer if it's free, so Orchestrator's context stays clean.
 - **One consolidated reply.** When Orchestrator hands work off, it messages the other bots first, then sends you a single message saying what went where and what to expect. It doesn't send a separate acknowledgement first.
@@ -364,7 +360,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Put the ticket key in the PR title** (and preferably the commit) so the tracker links it. The title is enough; don't add empty "link ticket" commits.
 - **Releases.** Tagging, publishing and marking a PR ready all need your explicit go-ahead. If a publish fails, stop and report; don't rerun it. An approval covers only what it names. A deploy being confirmed isn't release approval, and an OK for one batch or date doesn't cover others.
 - **Don't report checks you handle yourself.** Required checks or approvals that you handle yourself, such as code-owner approval, aren't open items.
-- **Prefer API reads over clones.** For lookups, prefer `gh api` and `gh pr view` over cloning. Temporary clones go in a temp folder and get deleted.
+- **Prefer API reads over clones.** For lookups, prefer `gh api` and `gh pr view` over cloning. Temporary clones go in a temp folder.
 
 ## Code style
 
@@ -379,7 +375,6 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Ask before changing your dotfiles** on any machine. Edits are fine once you've approved the specific change.
 - **Destructive commands stay narrow.** Container cleanup only removes what the task itself created, by name or ID. Never run a blanket prune.
 - **A dev VM is read-only** unless you ask otherwise.
-- **"Approved" doesn't mean "start".** A plan note marked `approved` means you signed off on it. Nobody builds until you give an explicit go. Note statuses: `draft`, `needs-review`, `approved`, `done`, `blocked`.
 - **A 🚀 reaction** on a bot's message means "do it" for what that message proposed.
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
 - **Vault notes.** The vault bot is the steward for all vault writes; its sha and rule checks have caught real problems. The one exception is Rollup's own accomplishments notes, which Rollup writes directly with sha guards, as a trial running Nov 10–24, 2026. Nobody commits vault changes by hand: the Obsidian Git plugin auto-commits, pushes and pulls. For a change you want made to a note, ask the vault bot to make it and let it do the editing. Hand over full verbatim content only when you're delivering a finished file, such as a generated note or a backup. The vault is the source of truth for plans and notes.
@@ -403,6 +398,20 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
 - **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes. Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
 
+## How a plan moves
+
+Every plan follows one path from your ask to filed work. Each step links to the rule that defines it.
+
+1. **You ask.** The coordinator answers a short ask itself and hands a bigger one to the owning bot ([Handoffs](#handoffs)).
+2. **The bot drafts it.** A short plan comes back in chat. A bigger plan, with many decisions or lengthy findings, becomes a `draft` note in the vault's `inbox/` while the bot researches, written through the vault bot ([Handoffs](#handoffs), [vault-write](#vault-write)).
+3. **The reviewer checks it if it's large or uncertain.** A written plan for a bigger change goes past Adversarial Reviewer before it reaches you ([When to use Adversarial Reviewer](#when-to-use-adversarial-reviewer)).
+4. **The bot sets `needs-review`.** Its research and writing are done, and the note waits on you.
+5. **You refine it together.** You read the note and send questions, changes and decisions through the coordinator, or edit the note yourself. The bot answers and revises the note in place through the vault bot, replacing what a decision supersedes instead of appending to it. The note stays `needs-review` through every round until you're satisfied.
+6. **You set `approved`.** Approval means you signed off on the plan, not that work starts. Nothing is built until you give an explicit go.
+7. **It's built and filed.** On your go, the note moves to `in-progress/` and stays `approved` while it's built. When the work is finished, it's set to `done` and filed to `projects/<repo>/`.
+
+Statuses, folders and filing are defined in Vault layout under [Other standing rules](#other-standing-rules). Specs follow their own lifecycle there and stay in `specs/` through every status.
+
 ## Shared skills worth copying
 
 Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These six are generic; the sixth, update-brain-readme, lives in this repo. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
@@ -416,7 +425,7 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 2. **The reviewer reviews adversarially.** It checks correctness against the real API and source, precedent, a minimal diff, breaking changes for callers, and parity across sibling PRs. It cites file and line for every finding and writes long findings to a handoff file (with byte count and sha). It sends them to the coordinator bot (Orchestrator) only and stays silent in its own chat.
 3. **The coordinator tells the human.** It distills the findings into plain words with a proposed fix for each, and uses a question card when a decision is needed. The owner and reviewer don't message the human directly about handed-off work.
 4. **No fix without the human's OK.** The coordinator relays the human's exact approval to the owner, and the owner pushes only what was approved. Delta-review only if the follow-up is itself large or uncertain.
-5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words. Once the human marks a PR ready, leave it ready; don't convert it back to draft unless they ask.
+5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words. Once it's ready, it stays ready (see [Git, PR and commit conventions](#git-pr-and-commit-conventions)).
 6. **Keep it quiet.** Don't post PR comments or replies on GitHub unless the human asked for that exact text. An engineer bot posts one audit-log line in its own chat only for the first concrete deliverable (for example, the PR opened), not for follow-up commits.
 
 ### vault-write
@@ -494,7 +503,6 @@ Cadence rules first, because they matter more than any single routine:
 - **Weekly is the default for upkeep.** Housekeeping routines, such as session summaries, run weekly unless you need them fresher. Daily is for things you read daily, such as the recap and the morning nudge.
 - **Don't add a routine just to watch usage;** it would use usage itself. Fold that check into a routine that already runs.
 - **Cheap check first, then exit quietly.** Start with the cheapest check that rules out work (is the machine reachable, did anything change). End without any messages when there's nothing new. If a machine it needs is offline, stop and retry at most once a day.
-- **Logging off runs today's remaining work now.** When you say you're logging off, the coordinator fires any remaining same-day routines and tasks immediately, instead of waiting for their scheduled time.
 
 The routines (times are in your own zone):
 
@@ -520,9 +528,9 @@ The brain README and the styles README stay current through one rolling PR each,
 
 - **Daily brain README PR.** Weekdays around 3 PM (the owner's end of day), the coordinator gathers that day's process and team changes and has the dev-env bot commit them on top of the one open rolling brain PR. If none is open, it opens a new draft PR. It leaves an existing PR's draft or ready state alone. It stays quiet unless something is blocked.
 - **Daily styles README PR.** The same flow for the styles repo at the same time, starting from the pending styles list and committing from your own GitHub account on your computer.
-- **Friday brain and styles PRs ready.** Fridays around 3:15 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges; bots never merge.
+- **Friday brain and styles PRs ready.** Fridays around 3:15 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges.
 - **Weekly brain memory audit.** Weekdays around 9 AM, the coordinator checks once a week that local memory matches the README on the default branch. The audit runs on Monday when last week's rolling PR is already merged; if that PR is still open, the coordinator tells the owner the audit is waiting and runs it on the first weekday morning after the merge. After a completed audit, the coordinator reports what drifted and what was fixed, or one line that everything matches.
-- **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, never opens a second rolling PR, and never force-pushes. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
+- **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, and never opens a second rolling PR. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
 
 ### Routine reference
 
