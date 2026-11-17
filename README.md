@@ -330,7 +330,7 @@ The reviewer is a separate bot with a clean context, so it catches what the auth
 
 **Skip it** for small, straightforward, low-impact or certain changes and plans, and for quick asks or brainstorming.
 
-**How often:** for multi-step work, review once when the work is completely done, not after every step. Re-review a follow-up only if it is itself large or uncertain, and then only the new delta.
+**How often:** for multi-step work, review once when the work is completely done, not after every step. Re-review a follow-up only if it is itself large or uncertain. A re-review covers only the diff since the head the reviewer last reviewed, unless you ask for a comprehensive review.
 
 **What to ask for:** breaking changes and undesired behavior the author missed, checked against the project's precedent and the style rulebook. No nitpicks. The reviewer never rewrites the code, and it never approves, merges or comments on GitHub unless you ask.
 
