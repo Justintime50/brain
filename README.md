@@ -297,6 +297,7 @@ These keep the human's attention in one place and keep bot chatter down.
 6. Reports to the coordinator are written plainly, not addressed to you; the coordinator writes your version.
 7. Copies sent to the coordinator as FYI need no reply.
 8. **Only what needs you.** Leave out expected happy-path details, such as CI passing, tests passing, draft state or a clean PR body. Report only what needs your decision or didn't go as expected, such as tests failing because of the change. Required checks or approvals you handle yourself, such as code-owner approval, aren't open items.
+9. **Choice cards take a typed answer.** Every question card a bot sends you includes a free-text option, so you can override the suggested picks with your own answer and context.
 
 The rule started as a link for every deliverable from any bot and was narrowed to first deliverables from engineer bots. Each engineer's chat is a short, timestamped log of what it shipped.
 
