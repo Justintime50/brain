@@ -167,7 +167,7 @@ Connector details a rebuild needs:
 
 Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
 
-On a Mac, set your SSH config to add keys to the agent and use the keychain, then load your key into the keychain once, so bots' git over SSH never stops at a passphrase prompt.
+On a Mac, set your SSH config to add keys to the agent and use the keychain, then load your key into the keychain once, so bots' git over SSH never stops at a passphrase prompt, even after a reboot. Keys on the dev VM and other servers have no passphrase, so a reboot never leaves them, or the crons that use them, waiting on input nobody can give. No keychain wrapper is needed there.
 
 Nothing depends on browser logins on the shared box. Bots use connectors, or your own computer, instead.
 
@@ -342,6 +342,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Never merge, and never push to a default branch.** Bots push only to PR branches. Merging is always the human's step.
 - **Draft PRs.** The owning bot does the work and pushes it straight up as a draft PR, without pre-approving the title or body. If review is needed, the reviewer reviews the live PR while you look at it too. Once you mark a PR ready for review, bots leave it ready and never convert it back to draft unless you ask, even while work is still going back and forth.
 - **Leave approvals in place.** Bots never dismiss an existing PR approval. Where pushing new commits doesn't dismiss approvals, a push after approval doesn't need a new one.
+- **Review fixes go straight onto the bot's own draft PR.** An engineer bot pushes fixes for the adversarial reviewer's (or any other review's) findings to its own draft PR without asking first. The PR stays draft, commits are yours with no trailers, and the force-push rules below still apply. New scope, marking it ready, merging and anything posted on GitHub still need your OK.
 - **Branch names, commit messages, CI pinning and verify-only changes** follow the [styles README](https://github.com/Justintime50/styles).
 - **Existing PR branches keep their names,** because renaming a PR's head branch on GitHub closes the PR.
 - **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, and no bot co-authors. Agent session links are covered by **No agent links** below. If you use an AI coding assistant, turn off its co-author setting too.
@@ -351,7 +352,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **No agent links.** PR descriptions, PR comments and commits never include links to bot or agent sessions, including the coding tool's agent links and footer markers, because they can expose sensitive data. If a tool adds them, the bot removes them.
 - **Cloud coding agents only code.** A cloud coding agent does only the coding task it was given and never acts for you otherwise: it doesn't reply to reviewers, post comments or speak for you. The coordinator and the bots handle that, with your OK as usual. Bots archive each cloud agent as soon as its coding task is done, so it can't pick up later PR comments on its own, as one once did.
 - **Brevity everywhere.** If it can be said with less, use less. Go long only for edge cases or context that isn't readily available.
-- **Anything posted on GitHub as you** uses your own words or gets your OK, including PR comments and description edits.
+- **Anything posted on GitHub as you** uses your own words or gets your OK, including PR comments. The exception is keeping your own PR descriptions accurate: when a bot changes one of your PRs, it updates that PR's description to match without asking.
 - **Never merge the default branch into a PR branch.** Rebasing onto the updated default branch, then force-pushing the PR branch with `--force-with-lease`, is the only way to update a behind PR, and bots may do that freely. Any other force-push still needs your explicit OK, after being told what it would overwrite. This git convention is also in the [styles README](https://github.com/Justintime50/styles).
 - **Fold small related fixes into an existing PR** instead of opening new ones.
 - **Keep sibling PRs matching.** When one change spans several repos, each file's changes match across the PRs as closely as possible.
@@ -384,6 +385,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Logging on early.** When you log on early, your first message of the day also means start the start-of-day routines early (the morning nudge, the weekly brain memory audit, and any other morning routines that would have waited for their usual time).
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
 - **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes (see **Cloud coding agents only code** under [Git, PR and commit conventions](#git-pr-and-commit-conventions)). Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
+- **Days off.** When you say you'll be out, the coordinator sets two one-off routines: one the evening before that pauses the weekday routines, and one the morning you're back that resumes them. Bots don't work or run routines while you're out.
 
 ### Vault layout
 
@@ -435,7 +437,7 @@ Use when a bot has opened or updated a pull request whose change is large, nuanc
 1. **The owner sends the PR to the reviewer bot.** Include the PR link, head SHA, the spec or ticket, and what changed since the last review.
 2. **The reviewer reviews adversarially.** It checks correctness against the real API and source, precedent, a minimal diff, breaking changes for callers, and parity across sibling PRs. It cites file and line for every finding and writes long findings to a handoff file (with byte count and sha). It sends them to the coordinator bot (Orchestrator) only and stays silent in its own chat.
 3. **The coordinator tells the human.** It distills the findings into plain words with a proposed fix for each, and uses a question card when a decision is needed. The owner and reviewer don't message the human directly about handed-off work.
-4. **No fix without the human's OK.** The coordinator relays the human's exact approval to the owner, and the owner pushes only what was approved. Delta-review only if the follow-up is itself large or uncertain.
+4. **Review fixes go straight on.** The owner pushes fixes for the findings to its own draft PR without waiting for the human's OK, and the coordinator reports what was fixed. Findings that need a decision, and anything beyond fixing the reviewed change, wait for the human's OK, which the coordinator relays to the owner exactly. Delta-review only if the follow-up is itself large or uncertain.
 5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words. Once it's ready, it stays ready (see [Git, PR and commit conventions](#git-pr-and-commit-conventions)).
 6. **Keep it quiet.** Don't post PR comments or replies on GitHub unless the human asked for that exact text. An engineer bot posts one audit-log line in its own chat only for the first concrete deliverable (for example, the PR opened), not for follow-up commits.
 
