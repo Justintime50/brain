@@ -351,7 +351,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Branch names, commit messages, CI pinning and verify-only changes** follow the [styles README](https://github.com/Justintime50/styles).
 - **Existing PR branches keep their names,** because renaming a PR's head branch on GitHub closes the PR.
 - **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, and no bot co-authors. Agent session links are covered by **No agent links** below. If you use an AI coding assistant, turn off its co-author setting too.
-- **Signed and Verified.** Every bot commit is signed with your key and shows as Verified on the code host. On a Mac, bots point git at the login session's SSH agent per command; on the dev VM, they commit only over your computer's agent-forwarding SSH session (see [commit-signing-preflight](#commit-signing-preflight)). Bots never turn signing off; if signing fails, they stop and ask. After each push, the bot checks that every new commit shows Verified before reporting, and the reviewer checks it too. Signing applies from its adoption forward; older unsigned commits aren't rewritten.
+- **Signed commits.** Every bot commit is signed with your key. On a Mac, bots point git at the login session's SSH agent per command; on the dev VM, they commit over your computer's agent-forwarding SSH session. Bots never turn signing off; if signing fails, they stop and ask. Signing applies from its adoption forward; older unsigned commits aren't rewritten.
 - **Never modify your git config** on any machine. When a command needs a different setting, bots use per-command `git -c` flags or environment variables.
 - **Work in git worktrees.** Parallel work on the same repo stays in separate worktrees off the latest default branch, never mixed into another agent's checkout or your main checkout.
 - **PR descriptions are for posterity and reviewers:** what changed and why. They aren't status updates, and bot discussions stay out of them. Don't list unchanged settings unless they're needed to understand the diff.
@@ -437,7 +437,7 @@ Statuses, folders and filing are defined in [Vault layout](#vault-layout). Specs
 
 ## Shared skills worth copying
 
-Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These seven are generic; update-brain-readme lives in this repo. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
+Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These six are generic; the sixth, update-brain-readme, lives in this repo. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
 
 ### pr-review-loop
 
@@ -463,15 +463,6 @@ Use when any bot needs to create or change a note in the human's notes vault: ow
 5. **Log the write** (path, sha before and after, conflict yes or no) where your role keeps its log, and report the final vault path to whoever asked. Never put secrets (tokens, keys, passwords) in a vault note.
 
 **The keeper's audit.** The keeper bot audits recent vault changes on a schedule: it checks frontmatter, names and folders, fixes small slips, links new notes into indexes, and flags anything that needs the human's decision. A direct write isn't finished business until it passes that audit; fix anything the keeper flags on your notes.
-
-### commit-signing-preflight
-
-Use before any bot commits on a remote dev VM whose git signs commits with an SSH key from a forwarded agent, so every commit is signed and shows Verified. The VM has no signing key of its own; git signs with whatever key the forwarded agent offers, so a missing or stale agent means unsigned or failed commits.
-
-1. **Before committing.** Connect with agent forwarding (`ssh -A <host>`). If your local shell's agent socket is stale, point it at the live local agent first. On the VM, run `ssh-add -L`; it must list the human's signing key. If the agent isn't reachable, check the `/tmp/ssh-*/agent.*` sockets and export `SSH_AUTH_SOCK` to the one `ssh-add -L` succeeds on, usually the newest socket owned by your session, which long-lived shells and tmux often lose. If no socket lists the key, stop and report that the forwarded agent is missing. Don't commit.
-2. **Committing.** Never disable signing: no `--no-gpg-sign`, no `-c commit.gpgsign=false`, and no unsetting the format or key. Don't change git config; use per-command `-c` flags only.
-3. **After each commit.** Run `git cat-file commit HEAD | grep -q '^gpgsig '`. If it fails, the commit is unsigned: stop, leave it unpushed and report. Local `%G?` may show `N` without an allowed-signers file; ignore it and rely on the gpgsig header.
-4. **After each push.** Check that GitHub reports the commit verified, for example with `gh api repos/<owner>/<repo>/commits/<sha> --jq .commit.verification.verified`, which should be `true`. If not, report the reason field. Don't rewrite pushed history to fix it without the human's OK.
 
 ### multi-library-change
 
