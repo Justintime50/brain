@@ -465,7 +465,7 @@ Shared skills are written once and every bot can load them. They're what keep fa
 
 Use when a bot has opened or updated a pull request whose change is large, nuanced, likely to have impact, or uncertain, and it needs adversarial review before the human acts on it.
 
-0. **Decide if review is needed.** Skip it for small, straightforward, low-impact or certain changes. Review when the change is large, nuanced, likely to have impact, or uncertain. For multi-step work, review once at the end, not per step.
+0. **Decide if review is needed.** Skip it for small, straightforward, low-impact or certain changes. Review when the change is large, nuanced, likely to have impact, or uncertain. For multi-step work, review at phase boundaries only (about 4 reviews per PR at most), not per step or per commit.
 1. **The owner sends the PR to the reviewer bot.** Include the PR link, head SHA, the spec or ticket, and, for a re-review, the last reviewed SHA and what changed since then.
 2. **The reviewer reviews adversarially.** It checks correctness against the real API and source, precedent, a minimal diff, breaking changes for callers, and parity across sibling PRs. It cites file and line for every finding and writes long findings to a handoff file (with byte count and sha). It sends them to the coordinator bot (Orchestrator) only and stays silent in its own chat.
    - **Re-reviews are delta-only.** After the first review, the reviewer checks only the diff since the head it last reviewed, plus anything that diff directly affects. It does a comprehensive re-review only when the human explicitly asks for one.
