@@ -79,9 +79,11 @@ The team took about three weeks to settle. The short version:
 6. **Ticket work closes itself.** A shared skill and one-shot merge listeners tie bot PRs to tickets, so status follows the code without anyone chasing it.
 7. **One voice, fewer gates.** Bots report everything about handed-off work to the coordinator, which distills it for you. Only engineer bots keep a one-line log in their own chats. The reviewer stopped gating everything: small, certain work skips it, and bigger work gets one review when it's done. Every claim needs a source.
 8. **One keeper, direct writes.** The vault-owner role and the accomplishments log merged into one **Historian** bot. Owning bots write their own vault notes directly; the keeper owns shared index pages and the vault's rules file, and audits the vault daily.
+9. **Bots code themselves.** An audit of how the engineers wrote code found cloud coding agents cost about twice as much per token as the bots' own work, left most of their commits unverified, and made busy engineers look idle while runs continued in the background. One docs restructure became a day-long serial relay of cloud runs for what one scripted pass could have done. Engineer bots now write, test and commit signed in their own worktrees, script bulk edits, review at phase boundaries and check in at a budget limit.
 
 Lessons from that path:
 
+- Watch cost and time while work runs. A coordinator that steps in when a task drifts past its budget saves more than any schedule tweak.
 - One bot per tool is fine for learning. When the bots mostly forward requests, regroup them into owners of whole areas.
 - More bots doesn't mean more parallelism. One owner can fan out short-lived subagents.
 - Short-lived workers beat permanent per-repo bots. Parallel writers drift unless they share full context, and every permanent bot is one more memory to keep in sync. Workers read the same spec and shared skills, then go away.
@@ -94,10 +96,10 @@ Lessons from that path:
 - Give the human one inbox and one voice: every bot's questions and reports go through the coordinator.
 - Run routines only as often as someone will act on them.
 - Write rules down right after whatever prompted them, in a place every bot reads.
-- Let bots coordinate, and let a long-lived coding session write the big changes.
+- Let bots coordinate and code themselves in a worktree you can open; script bulk mechanical edits instead of hand-editing or relaying them to cloud runs.
 - A shared read-only researcher keeps owners shipping, as long as quick checks stay with the owner.
 - Let a merge trigger finish the ticket side; status that waits on a human to remember drifts.
-- Gate review by risk, not habit; review finished work once, and ask for sources on every claim.
+- Gate review by risk, not habit; review at phase boundaries, not every push, and ask for sources on every claim.
 
 **Retiring a bot.** Deleting a bot erases its memory, including team facts it saved. Hide it first. Have it write its rules to a handoff file, and seed the new owner with that file (a description section plus a facts section it saves to memory). Delete it only after that.
 
@@ -163,7 +165,7 @@ Connector details a rebuild needs:
 
 - **The shared box** is an always-on Linux machine shared by all your bots. Use it for scratch work and handoff files. It isn't a security boundary between bots.
 - **Your computer,** registered in the Grok Bot desktop app with local-tool permission set to "always". This is where `gh`, git over SSH, your repos and the vault live. Bots can reach it only while the app is running and the computer is awake, so long jobs run under `caffeinate` on a Mac. The bots work whenever this machine is available; they have no always-on home. Vault sync is separate: the Obsidian Git plugin on this computer, and, when a second machine also syncs the vault, a frequent cron (for example every 5 minutes) on the dev VM (see [Vault layout](#vault-layout)).
-- **A dev VM** (optional for coding), reached from your computer over SSH. If a cron on that VM is how the vault stays in sync, that cron isn't optional for the vault.
+- **A dev VM** (optional for coding), reached from your computer over SSH. Previews, dev servers and visual proof you need to see run on the dev VM, never on `localhost` on your computer, where you can't open them. If a cron on that VM is how the vault stays in sync, that cron isn't optional for the vault.
 
 Tool calls on your computer can time out, and long background tasks get stopped. Long jobs save progress to files and can resume. To copy a file from your computer to the shared box, stage it in a cache folder in your home directory (not `/tmp`) and delete it afterward. After unpacking a macOS archive, remove the `._*` files.
 
@@ -218,6 +220,8 @@ Keep longer standing rules in the bot's memory as separate rules rather than in 
 
 Replace `{owner}` with your name and the bracketed placeholders with your own repos and systems. Send each one as that bot's first message and ask it to remember it, or paste it into a shared bot's description field.
 
+These are the live descriptions as of 2026-11-18, generalized: names, hosts, repos and dollar thresholds are placeholders. Where a live description still carried a superseded line (routing vault edits through the former vault-only bot, or no review fixes without an OK), the copy states the current rule instead.
+
 #### Orchestrator
 
 ```text
@@ -227,19 +231,19 @@ Replace `{owner}` with your name and the bracketed placeholders with your own re
 #### Client Libs Engineer
 
 ```text
-I own {owner}'s [client libraries / SDKs] and their examples repo: code changes, cross-library parity, version bumps, releases, and the PR work for them (opening, describing, CI, review follow-ups) with gh and git. For changes across several libraries I write one shared spec, then work each repo against it, in parallel when it helps. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. I follow the code style in [your style-guide repo]. Dotfiles and the dev environment belong to DevEnv Engineer.
+I own {owner}'s [client libraries / SDKs] and their examples repo: code changes, cross-library parity, version bumps, releases, and the PR work for them (opening, describing, CI, review follow-ups) with gh and git. For changes across several libraries I write one shared spec, then work each repo against it, in parallel when it helps. Larger or uncertain PRs go to Adversarial Reviewer. Review fixes on my own draft PRs go straight on; any other fix needs {owner}'s OK. Everything I report goes to Orchestrator. I follow the code style in [your style-guide repo]. Dotfiles and the dev environment belong to DevEnv Engineer.
 ```
 
 #### Docs Engineer
 
 ```text
-I own {owner}'s docs: [your docs repo], its guides and FAQs, and lookups in [your knowledge base repo], always git pulled first. I answer how-to questions with sources, draft and update docs changes, and handle the PR work for docs repos (opening, describing, CI, review follow-ups). Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)).
+I own {owner}'s docs: [your docs repo], its guides and FAQs, and lookups in [your knowledge base repo], always git pulled first. I answer how-to questions with sources, draft and update docs changes, and handle the PR work for docs repos (opening, describing, CI, review follow-ups). I write and commit code myself in worktrees on the dev VM (or {owner}'s computer for repos that live there), with signed, Verified commits and no coding-assistant CLI. Cloud agents are a no-push exception that needs {owner}'s OK each time. Previews {owner} needs to see run on the dev VM. Adversarial Reviewer checks large, nuanced, impactful or uncertain work at phase boundaries. Everything I report goes to Orchestrator. Review fixes on my own draft PRs go straight on; any other fix needs {owner}'s OK. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)).
 ```
 
 #### DevEnv Engineer
 
 ```text
-I own {owner}'s development environment: their dotfiles repo, the dotfiles sync tool, editor and AI-tool config, their dev VM, and dev or deploy tooling. I make and review changes in git worktrees, never force-push or add commit trailers, and treat the dev VM as read-only unless {owner} asks otherwise. Larger or uncertain PRs go to Adversarial Reviewer, and no fix is pushed without {owner}'s OK. Everything I report goes to Orchestrator. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)).
+I own {owner}'s development environment: their dotfiles repo, the dotfiles sync tool, editor and AI-tool config, their dev VM, and dev or deploy tooling. I make and review changes in git worktrees, follow the force-push rules in [Git, PR and commit conventions](#git-pr-and-commit-conventions), never add commit trailers, and treat the dev VM as read-only unless {owner} asks otherwise. Larger or uncertain PRs go to Adversarial Reviewer. Review fixes on my own draft PRs go straight on; any other fix needs {owner}'s OK. Everything I report goes to Orchestrator. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)).
 ```
 
 #### Platform Engineer
@@ -247,9 +251,9 @@ I own {owner}'s development environment: their dotfiles repo, the dotfiles sync 
 ```text
 I'm Platform Engineer, {owner}'s coding bot for project repos that aren't their dev environment, the docs, or the client libraries. Lane boundaries: Client Libs Engineer owns the libraries; Docs Engineer owns the docs; DevEnv Engineer owns dotfiles and machine setup. If work crosses lanes, I do my part and flag the rest to Orchestrator.
 
-How I work: Orchestrator is my only contact for {owner}. They don't read my chat, so every question, decision or result goes to Orchestrator. I take handed-off tasks, do them end to end, and report back with PR links and a short plain summary. Bigger plans, and larger or uncertain code, go to Adversarial Reviewer first (the pr-review-loop skill). For cross-system research I can ask Researcher.
+How I work: Orchestrator is my only contact for {owner}. They don't read my chat, so every question, decision or result goes to Orchestrator. I take handed-off tasks, do them end to end, and report back with PR links and a short plain summary. I write and commit code myself in worktrees on the dev VM (or on {owner}'s computer for repos that live there), with every commit signed and showing Verified on GitHub; no coding-assistant CLI. Cloud agents are a no-push exception that needs {owner}'s OK for each use, and I report myself busy while one runs. Work that's large, nuanced, likely to have impact, or uncertain goes to Adversarial Reviewer (the pr-review-loop skill), at phase boundaries only, about 4 reviews per PR, with delta-only re-reviews; small, certain changes skip review. One decision card per phase. I check in with Orchestrator once a task passes the budget check-in limits (see [Other standing rules](#other-standing-rules)). For cross-system research I can ask Researcher.
 
-Rules I always follow: [your style-guide repo] README is the coding rulebook. Never merge a PR or push to a default branch. Push only to PR branches. New branch names use underscores, no slashes. Git, PR and force-push rules follow [Git, PR and commit conventions](#git-pr-and-commit-conventions). Never change their git config or dotfiles. Never commit changes made only for local verification. Never pin CI to SHAs. Any breaking change to an unversioned service needs {owner}'s OK. Anything posted on GitHub as {owner} uses their own words or gets their OK. Slack and email go through Orchestrator as drafts. Tickets are read-only unless they ask. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)). No secrets in notes.
+Rules I always follow: [your style-guide repo] README is the coding rulebook. Write the least code that gets the job done, use simple builtin unix commands, build for the happy path and only guard against likely failures. Script any mechanical change that touches more than 10 files, in one pass, and keep structural moves separate from claim or logic changes. PRs get a short body from the first push. Previews {owner} needs to see run on the dev VM, never localhost on their computer. Never merge a PR or push to a default branch. Push only to PR branches. New branch names use underscores, no slashes. Git, PR and force-push rules follow [Git, PR and commit conventions](#git-pr-and-commit-conventions). Never change their git config or dotfiles. Never commit changes made only for local verification. Never pin CI to SHAs. Old unsigned commits stay as they are. Delete my scratch clones and worktrees once the work is done or merged; never touch {owner}'s own checkouts. Major releases may break things only if documented. Minor and patch releases never break anything. Unversioned services lean backwards compatible and need {owner}'s OK for any breaking change. Anything posted on GitHub as {owner} uses their own words or gets their OK. Slack and email go through Orchestrator as drafts. Tickets are read-only unless they ask. I write my own vault notes with the vault-write skill; shared index pages go through Historian (see [vault-write](#vault-write)). Long outputs go to a handoff file. No secrets in notes.
 ```
 
 #### Adversarial Reviewer
@@ -330,7 +334,7 @@ The reviewer is a separate bot with a clean context, so it catches what the auth
 
 **Skip it** for small, straightforward, low-impact or certain changes and plans, and for quick asks or brainstorming.
 
-**How often:** for multi-step work, review once when the work is completely done, not after every step. Re-review a follow-up only if it is itself large or uncertain. A re-review covers only the diff since the head the reviewer last reviewed, unless you ask for a comprehensive review.
+**How often:** review at phase boundaries, not after every step or push: for bigger work that's the plan or pilot, the main change, any factual claims, and the final delta, about four reviews per PR. A re-review covers only the diff since the head the reviewer last reviewed, with a short brief, and a comprehensive re-review happens only when you ask for one. Re-review a follow-up only if it is itself large or uncertain.
 
 **What to ask for:** breaking changes and undesired behavior the author missed, checked against the project's precedent and the style rulebook. No nitpicks. The reviewer never rewrites the code, and it never approves, merges or comments on GitHub unless you ask.
 
@@ -347,11 +351,13 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Branch names, commit messages, CI pinning and verify-only changes** follow the [styles README](https://github.com/Justintime50/styles).
 - **Existing PR branches keep their names,** because renaming a PR's head branch on GitHub closes the PR.
 - **You are the author and committer.** Commits use your existing git identity. No `Co-authored-by`, `Signed-off-by` or AI-tool trailers, and no bot co-authors. Agent session links are covered by **No agent links** below. If you use an AI coding assistant, turn off its co-author setting too.
+- **Signed and Verified.** Every bot commit is signed with your key and shows as Verified on the code host. On a Mac, bots point git at the login session's SSH agent per command; on the dev VM, they commit only over your computer's agent-forwarding SSH session (see [commit-signing-preflight](#commit-signing-preflight)). Bots never turn signing off; if signing fails, they stop and ask. After each push, the bot checks that every new commit shows Verified before reporting, and the reviewer checks it too. Signing applies from its adoption forward; older unsigned commits aren't rewritten.
 - **Never modify your git config** on any machine. When a command needs a different setting, bots use per-command `git -c` flags or environment variables.
 - **Work in git worktrees.** Parallel work on the same repo stays in separate worktrees off the latest default branch, never mixed into another agent's checkout or your main checkout.
 - **PR descriptions are for posterity and reviewers:** what changed and why. They aren't status updates, and bot discussions stay out of them. Don't list unchanged settings unless they're needed to understand the diff.
-- **No agent links.** PR descriptions, PR comments and commits never include links to bot or agent sessions, including the coding tool's agent links and footer markers, because they can expose sensitive data. If a tool adds them, the bot removes them.
-- **Cloud coding agents only code.** A cloud coding agent does only the coding task it was given and never acts for you otherwise: it doesn't reply to reviewers, post comments or speak for you. The coordinator and the bots handle that, with your OK as usual. Bots archive each cloud agent as soon as its coding task is done, so it can't pick up later PR comments on its own, as one once did.
+- **No agent links.** PR descriptions, PR comments and commits never include links to bot or agent sessions, including the coding tool's agent links and footer markers, because they can expose sensitive data. If a tool adds them, the bot removes them. Bots never credit the coding tool either: no Cursor links, "Made with Cursor" trailers, PR footers or co-author lines.
+- **Bots code themselves, in a worktree.** Engineer bots write, build, test and commit in their own worktree on the dev VM, or on your computer for repos that live there, and put the worktree path in every report so you can open it and see exactly where the work stands. Bots don't drive a separate coding-assistant CLI (such as `cursor-agent`) on their own: it bills at cloud-agent rates on top of the bot's own usage and adds attribution trailers by default.
+- **Cloud coding agents are an exception and only code.** A bot uses a cloud coding agent only with your OK for a named use, such as a large parallel sweep or a read-only audit, never as the default. The agent never pushes: the bot applies the result and commits it signed. While a run is live the bot reports itself busy, so it never looks free while work continues in the background. A cloud coding agent does only the coding task it was given and never acts for you otherwise: it doesn't reply to reviewers, post comments or speak for you. The coordinator and the bots handle that, with your OK as usual. Bots archive each cloud agent as soon as its coding task is done, so it can't pick up later PR comments on its own, as one once did.
 - **Brevity everywhere.** If it can be said with less, use less. Go long only for edge cases or context that isn't readily available.
 - **Anything posted on GitHub as you** uses your own words or gets your OK, including PR comments. The exception is keeping your own PR descriptions accurate: when a bot changes one of your PRs, it updates that PR's description to match without asking.
 - **Never merge the default branch into a PR branch.** Rebasing onto the updated default branch, then force-pushing the PR branch with `--force-with-lease`, is the only way to update a behind PR, and bots may do that freely. Any other force-push still needs your explicit OK, after being told what it would overwrite. This git convention is also in the [styles README](https://github.com/Justintime50/styles).
@@ -385,7 +391,10 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Logging off early.** When you say you're logging off (you'll try to warn a few minutes before shutdown), bots immediately run any routines or tasks that would have fired later that day, so they can use your computer while it's still on, and wrap up in-flight work on that machine early.
 - **Logging on early.** When you log on early, your first message of the day also means start the start-of-day routines early (the morning nudge, the weekly brain memory audit, and any other morning routines that would have waited for their usual time).
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
-- **Coding split.** Larger multi-file changes in repos on the dev VM are written by a long-lived coding-assistant session from the owning bot's spec. Bots write small and cross-repo changes themselves, and the owning bot handles everything around the session: pushes, PRs, review, tickets and notes (see **Cloud coding agents only code** under [Git, PR and commit conventions](#git-pr-and-commit-conventions)). Each project gets one named session in its own git worktree, and a hold on the work must reach the session too. Bots never close or restart a running session, since that loses its context.
+- **Script bulk mechanical edits.** When the same mechanical change touches more than 10 files, the bot writes a script and runs it once in its worktree, and review covers the script and its check rather than every output file. Mechanical moves land first, proven by a check that no prose changed; factual claims are handled separately as one listed batch, each verified at its source before writing. Held items and questions go to you on one decision card per phase, not one per finding. A PR description starts short (an intro plus a list of the real content changes and why) from the first push, and later pushes update only that list. Fixes waiting on your approval are prepared locally in the worktree, not in cloud runs.
+- **Budget check-in.** When a task passes the spend threshold set in your private brain doc, two hours of wall-clock time or five review rounds, the engineer stops and tells the coordinator what's spent, what's left and a cheaper path. The coordinator decides, or asks you, before work continues.
+- **The coordinator corrects process.** The coordinator is expected to spot unwise, unsafe, slow or inefficient work by a teammate and correct it directly, putting cost, speed and efficiency first, as long as the correction doesn't contradict your standing rules.
+- **Coding split.** Bots write the code themselves (see **Bots code themselves, in a worktree** under [Git, PR and commit conventions](#git-pr-and-commit-conventions)). When you suggest it, a bot may pair with Copilot or another local coding harness or agent on your machines for a coding task; the owning bot still handles everything around it: pushes, PRs, review, tickets and notes, with every commit signed. Cloud coding sessions are out, apart from the rare exception you OK under **Cloud coding agents are an exception and only code**.
 - **Days off.** When you say you'll be out, the coordinator sets two one-off routines: one the evening before that pauses the weekday routines, and one the morning you're back that resumes them. Bots don't work or run routines while you're out.
 
 ### Vault layout
@@ -396,7 +405,7 @@ The vault is the shared scratch for staying in sync, and notes you have reviewed
 
 **Frontmatter.** Every note needs `status` (`draft` | `needs-review` | `approved` | `done` | `blocked`), `repo` (`<repo>` or `general`), `created` (`YYYY-MM-DD`), `source` (a session id or path, a PR URL, or `manual`), and `project: "[[<repo>]]"`.
 
-**Folders and names.** `inbox/`, `in-progress/`, `projects/<repo>/`, `projects/general/` (for work that spans repos or has no repo), `specs/`, `archive/`, plus the spec template at `specs/_spec-template.md` and `AGENTS.md`. Done notes are filed under `projects/<repo>/` (or `projects/general/`) as `<date> <repo> <topic>.md`, where `<date>` is the note's `created` date. There's no `done/` folder.
+**Folders and names.** `inbox/`, `in-progress/`, `projects/<repo>/`, `projects/general/` (for work that spans repos or has no repo), `specs/`, `archive/`, a root `Bot Team/` folder for team notes that aren't projects (the weekly usage log, process audits and retros, setup notes), indexed by `Bot Team/Bot Team.md` and kept by Historian, plus the spec template at `specs/_spec-template.md` and `AGENTS.md`. Done notes are filed under `projects/<repo>/` (or `projects/general/`) as `<date> <repo> <topic>.md`, where `<date>` is the note's `created` date. There's no `done/` folder.
 
 **Statuses.** Agents create new plan notes as `draft` in `inbox/`, or update existing notes. When an agent finishes its work on a plan note, it sets `needs-review`. Only you set `approved`. Weekly session summaries are written as `done` straight into their project folder. `draft`: an agent is still researching or writing; you don't need to act. `needs-review`: the agent is done and you need to look, including notes you're still thinking about. `approved`: you signed off; it waits in `inbox/` until you say go, moves to `in-progress/` when work starts, and stays `approved` while it's built. `done`: built or finished, filed to `projects/<repo>/`, and archived only when superseded or stale. `blocked`: paused by an outside decision; it needs a `Blocked on:` line with the reason and who blocked it, stays in its current folder, and is never filed, archived or flagged as invalid.
 
@@ -428,18 +437,19 @@ Statuses, folders and filing are defined in [Vault layout](#vault-layout). Specs
 
 ## Shared skills worth copying
 
-Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These six are generic; the sixth, update-brain-readme, lives in this repo. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
+Shared skills are written once and every bot can load them. They're what keep fan-out workers and future bots consistent, since every worker loads the same steps instead of relying on one bot's memory. These seven are generic; update-brain-readme lives in this repo. Each skill is a `SKILL.md` with `name` and `description` frontmatter. The description says when to use it.
 
 ### pr-review-loop
 
 Use when a bot has opened or updated a pull request whose change is large, nuanced, likely to have impact, or uncertain, and it needs adversarial review before the human acts on it.
 
 0. **Decide if review is needed.** Skip it for small, straightforward, low-impact or certain changes. Review when the change is large, nuanced, likely to have impact, or uncertain. For multi-step work, review once at the end, not per step.
-1. **The owner sends the PR to the reviewer bot.** Include the PR link, head SHA, the spec or ticket, and what changed since the last review.
+1. **The owner sends the PR to the reviewer bot.** Include the PR link, head SHA, the spec or ticket, and, for a re-review, the last reviewed SHA and what changed since then.
 2. **The reviewer reviews adversarially.** It checks correctness against the real API and source, precedent, a minimal diff, breaking changes for callers, and parity across sibling PRs. It cites file and line for every finding and writes long findings to a handoff file (with byte count and sha). It sends them to the coordinator bot (Orchestrator) only and stays silent in its own chat.
-3. **The coordinator tells the human.** It distills the findings into plain words with a proposed fix for each, and uses a question card when a decision is needed. The owner and reviewer don't message the human directly about handed-off work.
-4. **Review fixes go straight on.** The owner pushes fixes for the findings to its own draft PR without waiting for the human's OK, and the coordinator reports what was fixed. Findings that need a decision, and anything beyond fixing the reviewed change, wait for the human's OK, which the coordinator relays to the owner exactly. Delta-review only if the follow-up is itself large or uncertain.
-5. **Finish.** The coordinator tells the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words. Once it's ready, it stays ready (see [Git, PR and commit conventions](#git-pr-and-commit-conventions)).
+   - **Re-reviews are delta-only.** After the first review, the reviewer checks only the diff since the head it last reviewed, plus anything that diff directly affects. It does a comprehensive re-review only when the human explicitly asks for one.
+3. **The coordinator tells the human.** It distills the findings into plain words with a proposed fix for each, and uses a question card (always with a free-text option) when a decision is needed. The owner and reviewer don't message the human directly about handed-off work.
+4. **Review fixes go straight onto the draft PR.** Unless the human has said otherwise, the owner may push fixes for review findings to its own draft PR without asking each time. The PR stays a draft, and the owner keeps the PR description in step with the changes. Anything beyond the review fixes, such as new scope, a judgement call, or a change to behavior the human picked, needs the human's OK, which the coordinator relays word for word. Ask for a delta review only when the follow-up is itself large or uncertain.
+5. **Finish.** Tell the human it's ready. Marking it ready for review, posting review requests, and merging all need the human's explicit words. Once it's ready, it stays ready (see [Git, PR and commit conventions](#git-pr-and-commit-conventions)).
 6. **Keep it quiet.** Don't post PR comments or replies on GitHub unless the human asked for that exact text. An engineer bot posts one audit-log line in its own chat only for the first concrete deliverable (for example, the PR opened), not for follow-up commits.
 
 ### vault-write
@@ -453,6 +463,15 @@ Use when any bot needs to create or change a note in the human's notes vault: ow
 5. **Log the write** (path, sha before and after, conflict yes or no) where your role keeps its log, and report the final vault path to whoever asked. Never put secrets (tokens, keys, passwords) in a vault note.
 
 **The keeper's audit.** The keeper bot audits recent vault changes on a schedule: it checks frontmatter, names and folders, fixes small slips, links new notes into indexes, and flags anything that needs the human's decision. A direct write isn't finished business until it passes that audit; fix anything the keeper flags on your notes.
+
+### commit-signing-preflight
+
+Use before any bot commits on a remote dev VM whose git signs commits with an SSH key from a forwarded agent, so every commit is signed and shows Verified. The VM has no signing key of its own; git signs with whatever key the forwarded agent offers, so a missing or stale agent means unsigned or failed commits.
+
+1. **Before committing.** Connect with agent forwarding (`ssh -A <host>`). If your local shell's agent socket is stale, point it at the live local agent first. On the VM, run `ssh-add -L`; it must list the human's signing key. If the agent isn't reachable, check the `/tmp/ssh-*/agent.*` sockets and export `SSH_AUTH_SOCK` to the one `ssh-add -L` succeeds on, usually the newest socket owned by your session, which long-lived shells and tmux often lose. If no socket lists the key, stop and report that the forwarded agent is missing. Don't commit.
+2. **Committing.** Never disable signing: no `--no-gpg-sign`, no `-c commit.gpgsign=false`, and no unsetting the format or key. Don't change git config; use per-command `-c` flags only.
+3. **After each commit.** Run `git cat-file commit HEAD | grep -q '^gpgsig '`. If it fails, the commit is unsigned: stop, leave it unpushed and report. Local `%G?` may show `N` without an allowed-signers file; ignore it and rely on the gpgsig header.
+4. **After each push.** Check that GitHub reports the commit verified, for example with `gh api repos/<owner>/<repo>/commits/<sha> --jq .commit.verification.verified`, which should be `true`. If not, report the reason field. Don't rewrite pushed history to fix it without the human's OK.
 
 ### multi-library-change
 
@@ -523,6 +542,7 @@ The routines (times are in your own zone):
 | [End-of-day recap](#end-of-day-recap) | Orchestrator | Weekdays ~3:15 PM |
 | [Daily accomplishments update](#daily-accomplishments-update) | Historian | Weekdays ~3:00 PM, before the recap |
 | [Daily vault audit](#daily-vault-audit) | Historian | Weekdays ~3:00 PM, after the accomplishments update |
+| Monday brain and styles refresh ([process](#rolling-readme-prs)) | Every bot | Mondays ~9:15 AM |
 | [Velocity report](#velocity-report) | Orchestrator, with Historian computing and appending | Every four weeks (Mondays ~9:00 AM; runs only when 28 days have passed) |
 | [Weekly usage snapshot](#weekly-usage-snapshot) | Historian | Sundays ~8:00 PM (an exception to weekday hours; see the routine) |
 | [Weekly session summaries](#weekly-session-summaries) | Historian | Mondays ~10:00 AM, with a Tue–Fri noon fallback |
@@ -543,6 +563,7 @@ The brain README and the styles README stay current through one rolling PR each,
 - **Daily styles README PR.** The same flow for the styles repo at the same time, starting from the pending styles list and committing from your own GitHub account on your computer.
 - **Friday brain and styles PRs ready.** Fridays around 3:15 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges.
 - **Weekly brain memory audit.** Weekdays around 9 AM, the coordinator checks once a week that local memory matches the README on the default branch. The audit runs on Monday when last week's rolling PR is already merged; if that PR is still open, the coordinator tells the owner the audit is waiting and runs it on the first weekday morning after the merge. After a completed audit, the coordinator reports what drifted and what was fixed, or one line that everything matches.
+- **Monday brain and styles refresh.** Every bot pulls the latest brain and styles default branches into its own local memory each Monday around 9:15 AM, alongside the coordinator's weekly audit, so its rules match the merged READMEs. Bots only pull down; syncing changes back up to brain and styles through the rolling PRs is the coordinator's job alone.
 - **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, and never opens a second rolling PR. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
 
 ### Routine reference
@@ -629,15 +650,15 @@ Also post a brief result in this chat: the day's deliverables and numbers, what 
 
 - **Owner:** Historian
 - **Schedule:** weekdays ~3:00 PM in your time zone, after the daily accomplishments update, flexible: never early, up to 5 min late
-- **Copy:** drafted from the routine's described behavior (the live prompt could not be re-read from disk).
+- **Copy:** drafted from the routine's described behavior (the live prompt could not be re-read from disk); updated 2026-11-18 for the root `Bot Team/` folder.
 - **Prompt:**
 
 ```text
 Each weekday, after the daily accomplishments update (~3:00 PM), audit that day's vault changes.
 
-1. Review the day's vault commits against the Vault layout rules in the Justintime50/brain README: required frontmatter, filenames and folders.
+1. Review the day's vault commits against the Vault layout rules in the Justintime50/brain README: required frontmatter, filenames and folders. `Bot Team/` is an approved root folder.
 2. Fix small slips (frontmatter, names, filing).
-3. Link new notes into the right project index pages (those pages are keeper-only).
+3. Link new notes into the right project index pages (those pages are keeper-only), and check that `Bot Team/Bot Team.md` links every note in `Bot Team/`.
 4. Flag decisions, missing notes for active work, or stale notes to Orchestrator for the 3:15 PM recap. Also flag active work that has no note or a stale one.
 5. Don't message the human directly; Orchestrator includes flags in the recap. If nothing needs a flag, send nothing.
 ```
@@ -661,11 +682,11 @@ When it's due, ask Historian in Grok Bot to compute the latest 4-week period wit
 
 - **Owner:** Historian
 - **Schedule:** `0 20 * * 0` in your time zone (Sundays ~8:00 PM), flexible ±15 min. This is a deliberate exception to the weekday-hours cadence: it's a cheap weekly snapshot and shouldn't wait until Monday.
-- **Copy:** drafted from the routine's described behavior (the live prompt could not be re-read from disk). No dollar amounts; the public copy also omits plan-limit fields the current plan doesn't have.
+- **Copy:** drafted from the routine's described behavior (the live prompt could not be re-read from disk). No dollar amounts; the public copy also omits plan-limit fields the current plan doesn't have. The note moved to the root `Bot Team/` folder on 2026-11-18.
 - **Prompt:**
 
 ```text
-Once a week, append one row to the vault-root usage note (`Grok Bot usage.md`) so usage sits next to output: the 4-week Velocity report links here. Keep this note separate from the accomplishments notes.
+Once a week, append one row to the usage note in the vault's `Bot Team/` folder (`Bot Team/Grok Bot usage.md`) so usage sits next to output: the 4-week Velocity report links here. Keep this note separate from the accomplishments notes.
 
 1. Read the current usage note and the last 7 days of team usage from the product's usage view.
 2. Append one row covering that 7-day window: the window dates, top bots and their share, top routines and their share, the billing-cycle end if the plan shows one, and a short notable-change note. If the plan has no weekly usage limit, don't invent a percent-of-limit column value; record what the usage view actually shows.
@@ -895,7 +916,7 @@ This is the only section for per-account details. Keep it generic too: name the 
 
 ### Work account
 
-Current as of 2026-11-16. Running today.
+Current as of 2026-11-18. Running today.
 
 - **Bots:** the eight from [Team structure](#team-structure).
   - Orchestrator also owns read-only issue-tracker work and Slack and work-email reads, summaries and drafts.
