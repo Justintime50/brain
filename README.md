@@ -61,7 +61,7 @@ These figures compare my first 20 days with the bot team (Oct 21 to Nov 9, 2026,
 
 The increase came from the process this guide describes, not from any single rule.
 
-I talk to one coordinator and leave the rest of the work with specialist bots that each own an area end to end. Several workstreams can run at once: a change that spans several repos finishes in about the time of one, and work that needs my review goes first so I can look at it while CI runs. Review is reserved for large, nuanced or uncertain changes, and only once when the work is done; small, certain work skips it. Routines and one-shot merge watchers finish the follow-up that used to wait on me: tickets move with the code, and the day's recap arrives without anyone chasing it. Questions, results and approvals all come through one place, so I have a single inbox and a single human gate. Nothing ships without my OK.
+I talk to one coordinator and leave the rest of the work with specialist bots that each own an area end to end. Several workstreams can run at once: a change that spans several repos finishes in about the time of one, and work that needs my review goes first so I can look at it while CI runs. Review is reserved for large, nuanced or uncertain changes, at phase boundaries rather than on every push; small, certain work skips it. Routines and one-shot merge watchers finish the follow-up that used to wait on me: tickets move with the code, and the day's recap arrives without anyone chasing it. Questions, results and approvals all come through one place, so I have a single inbox and a single human gate. Nothing ships without my OK.
 
 The same process also cuts waste. Bots hop less, because one owner stays with a task and only hands off what it cannot do. Rules are written down as soon as a decision is made, so the same question is not relitigated. Shared skills keep every worker on the same steps.
 
@@ -90,7 +90,7 @@ Lessons from that path:
 - Fan-out spends more per task. Each parallel worker reads the spec, so a four-repo change costs more than doing it serially, but it finishes in about the time of one repo. Use it for multi-repo changes, not small edits.
 - Most usage comes from interactive work and bot-to-bot hops, not routines. Routines are only a few percent, so cutting hops saves more than trimming schedules. Idle bots are free.
 - Measure a team change. Compare usage and hop counts about two weeks after a reorg, and split a lane only if one area is clearly a bottleneck.
-- Keep one human approval gate. Nothing ships, posts or gets fixed without the human's OK.
+- Keep one human approval gate. Nothing ships or posts without the human's OK; only fixes for review findings on a bot's own draft PR go straight on.
 - A clean-context reviewer bot is worth having. Ask it what would break, not for polish.
 - Give the notes vault a keeper for shared pages and a daily audit; owning bots write their own notes directly with a sha guard (see [Vault layout](#vault-layout)).
 - Give the human one inbox and one voice: every bot's questions and reports go through the coordinator.
