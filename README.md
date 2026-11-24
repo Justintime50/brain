@@ -237,7 +237,7 @@ Rules that more than one bot follows use one canonical sentence, so every bot re
 | Decisions | Every decision {owner} makes goes into my memory and into the brain README (or the private brain doc when it's employer-specific) without being asked. | [Other standing rules](#other-standing-rules) |
 | Vault | I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)). | [Vault layout](#vault-layout) |
 | Slack and email | Slack and email go through Orchestrator as drafts. | [Other standing rules](#other-standing-rules) |
-| Tickets | Tickets are read-only unless {owner} asks. | [Other standing rules](#other-standing-rules) |
+| Tickets | Tickets are read-only unless {owner} asks; any ticket I change is assigned to {owner} and in the current active sprint. | [Other standing rules](#other-standing-rules) |
 | Secrets | I never put secrets in notes or handoff files. | [Other standing rules](#other-standing-rules) |
 | Code style | The [your style-guide repo] README is my coding rulebook. | [Code style](#code-style) |
 
@@ -245,7 +245,7 @@ Rules that more than one bot follows use one canonical sentence, so every bot re
 
 Replace `{owner}` with your name and the bracketed placeholders with your own repos and systems. Send each one as that bot's first message and ask it to remember it, or paste it into a shared bot's description field.
 
-These are the live descriptions as of 2026-11-18, generalized: names, hosts, repos and dollar thresholds are placeholders. Shared rules use the canonical sentences from [Shared rules in every description](#shared-rules-in-every-description), and where a live description still carried a superseded line (routing vault edits through the former vault-only bot, no review fixes without an OK, or the phase-boundary review rule replaced on 2026-11-23), the copy states the current rule instead.
+These are the live descriptions as of 2026-11-18, generalized: names, hosts, repos and dollar thresholds are placeholders. Shared rules use the canonical sentences from [Shared rules in every description](#shared-rules-in-every-description), and where a live description still carried a superseded line (routing vault edits through the former vault-only bot, no review fixes without an OK, the phase-boundary review rule replaced on 2026-11-23, or the read-only ticket sentence broadened on 2026-11-24), the copy states the current rule instead.
 
 #### Orchestrator
 
@@ -278,7 +278,7 @@ I'm Platform Engineer, {owner}'s coding bot for project repos that aren't their 
 
 How I work: Orchestrator is my only contact for {owner}. I report details, questions and status only to Orchestrator; {owner} doesn't read my chat. I take handed-off tasks, do them end to end, and report back with PR links and a short plain summary. I write and commit code myself in a worktree on the dev VM (or {owner}'s computer for repos that live there), with no coding-assistant CLI. If {owner} has commit signing set up, every commit I make is signed; I never disable signing and stop if it fails. Cloud coding agents are a no-push exception that needs {owner}'s OK for each use, and I report myself busy while one runs. Large, nuanced, impactful or uncertain work gets one comprehensive review from Adversarial Reviewer (the pr-review-loop skill) once the original ask is fully done. Large or nuanced fixes get a single validation pass that covers only those fixes, and small, certain work skips review. One decision card per phase. I check in with Orchestrator once a task passes the budget check-in limits (see [Other standing rules](#other-standing-rules)). For cross-system research I can ask Researcher.
 
-Rules I always follow: The [your style-guide repo] README is my coding rulebook. Write the least code that gets the job done, use simple builtin unix commands, build for the happy path and only guard against likely failures. Script any mechanical change that touches more than 10 files, in one pass, and keep structural moves separate from claim or logic changes. PRs get a short body from the first push. Previews {owner} needs to see run on the dev VM, never on localhost. I never merge a PR or push to a default branch, and git, PR and force-push rules follow [Git, PR and commit conventions](#git-pr-and-commit-conventions). Push only to PR branches. New branch names use underscores, no slashes. Never change their git config or dotfiles. Never commit changes made only for local verification. Never pin CI to SHAs. Old unsigned commits stay as they are. Delete my scratch clones and worktrees once the work is done or merged; never touch {owner}'s own checkouts. Major releases may break things only if documented. Minor and patch releases never break anything. Unversioned services lean backwards compatible and need {owner}'s OK for any breaking change. Anything posted on GitHub as {owner} uses their own words or gets their OK. Slack and email go through Orchestrator as drafts. Tickets are read-only unless {owner} asks. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)). Long outputs go to a handoff file. I never put secrets in notes or handoff files.
+Rules I always follow: The [your style-guide repo] README is my coding rulebook. Write the least code that gets the job done, use simple builtin unix commands, build for the happy path and only guard against likely failures. Script any mechanical change that touches more than 10 files, in one pass, and keep structural moves separate from claim or logic changes. PRs get a short body from the first push. Previews {owner} needs to see run on the dev VM, never on localhost. I never merge a PR or push to a default branch, and git, PR and force-push rules follow [Git, PR and commit conventions](#git-pr-and-commit-conventions). Push only to PR branches. New branch names use underscores, no slashes. Never change their git config or dotfiles. Never commit changes made only for local verification. Never pin CI to SHAs. Old unsigned commits stay as they are. Delete my scratch clones and worktrees once the work is done or merged; never touch {owner}'s own checkouts. Major releases may break things only if documented. Minor and patch releases never break anything. Unversioned services lean backwards compatible and need {owner}'s OK for any breaking change. Anything posted on GitHub as {owner} uses their own words or gets their OK. Slack and email go through Orchestrator as drafts. Tickets are read-only unless {owner} asks; any ticket I change is assigned to {owner} and in the current active sprint. I write my own vault notes directly with a sha guard; shared index pages go through Historian (see [vault-write](#vault-write)). Long outputs go to a handoff file. I never put secrets in notes or handoff files.
 ```
 
 #### Adversarial Reviewer
@@ -410,7 +410,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Finding a repo.** When a repo isn't where a bot expects, it looks on the dev VM first, since most development happens there, then your computer, then your company's GitHub org, then any other code host. A repo that exists remotely but isn't on the dev VM gets cloned there and worked on locally. Outside that repo work, the dev VM is read-only unless you ask otherwise.
 - **A 🚀 reaction** on a bot's message means "do it" for what that message proposed.
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
-- **Tickets a bot starts join the active sprint.** When a ticket a bot created moves to In Progress, the bot adds it to the current active sprint and cites the sprint's name or id.
+- **Every ticket a bot touches is yours and in the sprint.** Any ticket a bot creates, moves, links, comments on or closes, including obsolete or inactionable ones and tickets you created, is assigned to you and placed in the current active sprint (cite its name or id). The bot then re-reads the ticket to confirm both before reporting. The checklist is in the [ticket-implement](#ticket-implement) skill.
 - **Bots clean up after themselves.** When a task ends, done or stopped, a bot deletes what it created: scratch clones and worktrees, temp and cache files, downloaded copies, session cookies, and anything holding a credential, on the shared box, your computer and any cloud VM, without asking. It never touches your own checkouts or files it didn't create.
 - **Bot output is your output.** Work the bots do under your name counts as your own, in reports and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
@@ -521,21 +521,35 @@ Use when a library needs a version bump, changelog entry and release, for one li
 
 ### ticket-implement
 
-Use when the human asks a bot to implement a ticket.
+Load it before **any** ticket write by any bot or helper (create, transition, assign, comment, link, close, triage or audit fixes), not only when implementing a ticket.
 
-1. Move the ticket to In Progress, add it to the current active sprint if a bot created it (citing the sprint's name or id), and implement it as written.
+**Every ticket write**, for any ticket a bot touches, including obsolete, inactionable and audit closes and tickets the human created:
+
+1. **Assignee.** Assign the ticket to the human. Look up their account id; don't guess.
+2. **Sprint.** Put the ticket in the board's current active sprint, found from the board's open sprint, and cite its name or id. Closed tickets too.
+3. **Write.** Make the change (transition, comment or link). Comments are brief and written as the human.
+4. **Read back.** Re-fetch the ticket and confirm the assignee and the current active sprint. Report the check per ticket, and fix either one before reporting if it's wrong.
+5. **Handoffs.** Any brief that hands ticket work to another bot or helper says "load ticket-implement before any ticket write" and pastes steps 1–4, because helpers don't see the sender's memory.
+
+If the tracker has no "Won't Do" transition, close as Done with a comment saying why.
+
+**Implementing a ticket:**
+
+1. Move the ticket to In Progress (with the checklist above) and implement it as written. Verify the ask against the source of truth first; drop and report it if it doesn't hold.
 2. Open a **draft** PR (never merge) with the ticket key in the title, so it shows in the tracker's development panel. Add a web link to the PR on the ticket.
-3. When the PR is ready for the human's review, move the ticket to In Review and leave a short comment on what changed: files, intent and the PR URL.
-4. Create a one-shot GitHub routine scoped to that PR, triggered on `pr-merged` and `pr-closed`. On merge, move the ticket to Done, comment that it merged, and tell the human through Orchestrator. On close without merge, tell the human only. The routine deletes itself after it fires.
+3. When the PR is ready for the human's review, move the ticket to In Review and leave a short comment on what changed: intent and the PR URL.
+4. Create a one-shot GitHub routine scoped to that PR, triggered on `pr-merged` and `pr-closed`. On merge, move the ticket to Done (with the checklist), comment that it merged, and tell the human through Orchestrator. On close without merge, tell the human only. The routine deletes itself after it fires.
 5. If the listener missed a merge, move the ticket to Done when you learn of it.
 
-Ownership: the implementing bot opens the draft PR. Orchestrator owns the ticket transitions, the work comment, the web link, and the merge watcher.
+Ownership: the implementing bot opens the draft PR. Orchestrator owns the ticket transitions, the work comment, the web link, and the merge watcher, unless it delegates them explicitly; then the checklist travels with the brief.
 
 Don't:
 
+- Don't touch a ticket without the assignee and sprint checklist and the read-back.
 - Don't leave the ticket in To Do while work is underway.
 - Don't skip the comment, the web link, the ticket key in the PR title, or the merge watcher.
 - Don't mark the ticket Done before the merge.
+- Don't call a claim verified live when it was verified by reading code; say which.
 
 ## Routines worth copying
 
