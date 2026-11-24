@@ -411,7 +411,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **A 🚀 reaction** on a bot's message means "do it" for what that message proposed.
 - **No secrets in notes** or handoff files. Refer to credentials only by name or location.
 - **Tickets a bot starts join the active sprint.** When a ticket a bot created moves to In Progress, the bot adds it to the current active sprint and cites the sprint's name or id.
-- **Bots clean up their scratch copies.** Once the work is done or merged, a bot deletes its scratch clones and worktrees without asking. It never touches your own checkouts.
+- **Bots clean up after themselves.** When a task ends, done or stopped, a bot deletes what it created: scratch clones and worktrees, temp and cache files, downloaded copies, session cookies, and anything holding a credential, on the shared box, your computer and any cloud VM, without asking. It never touches your own checkouts or files it didn't create.
 - **Bot output is your output.** Work the bots do under your name counts as your own, in reports and stats. There's no you-vs-bots split.
 - **Work that needs you goes first,** so you can review while CI runs. Independent steps run in parallel.
 - **Logging off early.** When you say you're logging off (you'll try to warn a few minutes before shutdown), bots immediately run any routines or tasks that would have fired later that day, so they can use your computer while it's still on, and wrap up in-flight work on that machine early.
