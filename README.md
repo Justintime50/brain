@@ -18,6 +18,7 @@ This README is the single source of truth for the team's process and setup, and 
 
 ## Contents
 
+- [Core rules index](#core-rules-index)
 - **The story**
   - [Results](#results)
   - [How velocity tripled](#how-velocity-tripled)
@@ -41,6 +42,44 @@ This README is the single source of truth for the team's process and setup, and 
 - **Per account**
   - [Account-specific setup](#account-specific-setup)
   - [Private brain docs](#private-brain-docs)
+
+## Core rules index
+
+Every standing rule in one line, linked to its full rule. The full rule wins if the two ever differ. Every bot keeps this section word for word in one memory library file (see **Core rules index in memory** under [Other standing rules](#other-standing-rules)).
+
+- **Report to the coordinator.** Details, questions and status for handed-off work go only to Orchestrator. Only engineers post a one-line log, and only for a first deliverable. [Reporting](#reporting)
+- **Only what needs you, done not planned.** Report decisions needed and surprises in one line with a link. Skip happy-path details and acknowledgements. [Reporting](#reporting), [Handoffs](#handoffs)
+- **Choice cards take a typed answer.** Every question card includes a free-text option. [Reporting](#reporting)
+- **Briefs name their skill.** Every handoff brief names the governing skill and pastes its checklist, because helpers see only the brief. [Handoffs](#handoffs)
+- **Approval is never secondhand.** Check the owner's exact words before anything consequential. [Handoffs](#handoffs)
+- **Files, not chat history.** Anything past a short paragraph goes in a handoff file with its byte count and sha256. [Handoffs](#handoffs)
+- **One owner end to end.** Work stays with the bot that owns the system; if a needed machine is offline, say so and wait. [Handoffs](#handoffs)
+- **Verify and cite.** Every reported fact has a source. Say what was verified and what is inferred. [Verify and cite](#verify-and-cite)
+- **Review once, when it matters.** Large, nuanced, impactful or uncertain work gets one Adversarial Reviewer pass when the ask is done. [When to use Adversarial Reviewer](#when-to-use-adversarial-reviewer)
+- **Never merge or push to a default branch.** Draft PRs only, with the owner as author and committer, signed commits, no trailers or agent links, worktrees, and no git config changes. [Git, PR and commit conventions](#git-pr-and-commit-conventions)
+- **Force-push only to rebase a behind PR,** with `--force-with-lease`. Any other force-push needs the owner's OK. [Git, PR and commit conventions](#git-pr-and-commit-conventions)
+- **Ticket key in the PR title,** Conventional Commit type first. [Git, PR and commit conventions](#git-pr-and-commit-conventions)
+- **Releases need an explicit go-ahead.** That covers tagging, publishing and marking a PR ready. [Git, PR and commit conventions](#git-pr-and-commit-conventions)
+- **Code style lives in the styles repo.** [Code style](#code-style)
+- **Previews run on the dev VM,** never on localhost. [Machines](#machines)
+- **Nothing goes out as the owner without approval.** Slack and email are drafts; GitHub posts use the owner's words or get their OK. [Other standing rules](#other-standing-rules)
+- **Tickets are read-only unless the owner asks.** Any ticket a bot touches is assigned to the owner, placed in the current active sprint and read back to confirm. [Other standing rules](#other-standing-rules), [ticket-implement](#ticket-implement)
+- **Hands off other people's work.** [Other standing rules](#other-standing-rules)
+- **No secrets** in notes or handoff files. [Other standing rules](#other-standing-rules)
+- **Destructive commands stay narrow,** and email goes to trash, never permanent deletion. [Other standing rules](#other-standing-rules)
+- **Ask before changing dotfiles.** [Other standing rules](#other-standing-rules)
+- **Bots clean up after themselves.** [Other standing rules](#other-standing-rules)
+- **Work that needs the owner goes first.** Fan-out starts with one repo, and mechanical edits across more than 10 files are scripted. [Other standing rules](#other-standing-rules)
+- **Budget check-in** past the spend threshold, one hour or three review rounds. [Other standing rules](#other-standing-rules)
+- **Every decision is recorded** in memory and this README, or in the private brain doc. [Other standing rules](#other-standing-rules)
+- **Mistakes on defined rules get a process fix,** and a missing rule gets added here. [Other standing rules](#other-standing-rules)
+- **The coordinator corrects process.** [Other standing rules](#other-standing-rules)
+- **Logging on or off early, and days off,** shift the routines. [Other standing rules](#other-standing-rules)
+- **A 🚀 reaction means do it.** [Other standing rules](#other-standing-rules)
+- **Vault writes use a sha guard.** Shared index pages and `AGENTS.md` go through Historian. [Vault layout](#vault-layout)
+- **Plans move draft, needs-review, approved, then built on the owner's go, then done.** [How a plan moves](#how-a-plan-moves)
+- **Routines run weekdays in working hours,** use event triggers over polling, and stay quiet when nothing's new. [Routines worth copying](#routines-worth-copying)
+- **One rolling PR per README.** Mid-week refinements go in daily, and the Monday audit compares this index against memory in both directions. [Rolling README PRs](#rolling-readme-prs)
 
 ## Results
 
@@ -419,6 +458,8 @@ How code itself is written lives in one place: the README of [Justintime50/style
 - **Logging on early.** When you log on early, your first message of the day also means start the start-of-day routines early (the morning nudge, the weekly brain memory audit, and any other morning routines that would have waited for their usual time).
 - **Fan-out work starts with one repo.** Do one repo end to end and verify it before the batch. If two runs in a row fail the same way, stop and report instead of retrying.
 - **Script bulk mechanical edits.** When the same mechanical change touches more than 10 files, the bot writes a script and runs it once in its worktree, and review covers the script and its check rather than every output file. Mechanical moves land first, proven by a check that no prose changed; factual claims are handled separately as one listed batch, each verified at its source before writing. Held items and questions go to you on one decision card per phase, not one per finding. A PR description starts short (an intro plus a list of the real content changes and why) from the first push, and later pushes update only that list. Fixes waiting on your approval are prepared locally in the worktree, not in cloud runs.
+- **Mistakes on defined rules get a process fix.** When a bot gets something wrong that this README defines, or that you believe it defines, the coordinator finds out why and fixes the process (a skill, a checklist, a brief, a routine or this README) so it can't happen again. If the rule turns out to be missing, it's added here. Trying harder isn't a fix.
+- **Core rules index in memory.** Every bot keeps the [Core rules index](#core-rules-index) word for word in one memory library file (for example `/bot/rules/core`), refreshed each Monday from the default branch, so the standing rules are always one lookup away. The full sections stay the reference.
 - **Budget check-in.** When a task passes the spend threshold set in your private brain doc, one hour of wall-clock time or three review rounds, the engineer stops and tells the coordinator what's spent, what's left and a cheaper path. The coordinator decides, or asks you, before work continues.
 - **Every decision is recorded.** Every decision you make goes into the bots' memory and into this README in generic wording, or into your private brain doc when it's employer-specific, without you having to ask.
 - **The coordinator corrects process.** The coordinator is expected to spot unwise, unsafe, slow or inefficient work by a teammate and correct it directly, putting cost, speed and efficiency first, as long as the correction doesn't contradict your standing rules.
@@ -595,8 +636,8 @@ The brain README and the styles README stay current through one rolling PR each,
 - **Daily brain README PR.** Weekdays around 3 PM (the owner's end of day), the coordinator gathers that day's process and team changes and has the dev-env bot commit them on top of the one open rolling brain PR. If none is open, it opens a new draft PR. It leaves an existing PR's draft or ready state alone. It stays quiet unless something is blocked.
 - **Daily styles README PR.** The same flow for the styles repo at the same time, starting from the pending styles list and committing from your own GitHub account on your computer.
 - **Friday brain and styles PRs ready.** Fridays around 3:15 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges.
-- **Weekly brain memory audit.** Weekdays around 9 AM, the coordinator checks once a week that local memory matches the README on the default branch. The audit runs on Monday when last week's rolling PR is already merged; if that PR is still open, the coordinator tells the owner the audit is waiting and runs it on the first weekday morning after the merge. After a completed audit, the coordinator reports what drifted and what was fixed, or one line that everything matches.
-- **Monday brain and styles refresh.** Every bot pulls the latest brain and styles default branches into its own local memory each Monday around 9:15 AM, alongside the coordinator's weekly audit, so its rules match the merged READMEs. Bots only pull down; syncing changes back up to brain and styles through the rolling PRs is the coordinator's job alone.
+- **Weekly brain memory audit.** Weekdays around 9 AM, the coordinator checks once a week that local memory matches the README on the default branch. It compares the whole [Core rules index](#core-rules-index) on the default branch against each bot's memory copy in both directions: index lines missing or worded differently in memory get rewritten from the default branch, and rules in memory that the index doesn't carry get flagged for the rolling PR. It doesn't stop at checking for contradictions. The audit runs on Monday when last week's rolling PR is already merged; if that PR is still open, the coordinator tells the owner the audit is waiting and runs it on the first weekday morning after the merge. After a completed audit, the coordinator reports what drifted and what was fixed, or one line that everything matches.
+- **Monday brain and styles refresh.** Every bot pulls the latest brain and styles default branches into its own local memory each Monday around 9:15 AM, alongside the coordinator's weekly audit, so its rules match the merged READMEs. Each bot replaces its core rules memory file with the default branch's [Core rules index](#core-rules-index) word for word. Bots only pull down; syncing changes back up to brain and styles through the rolling PRs is the coordinator's job alone.
 - **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, and never opens a second rolling PR. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
 
 ### Routine reference
