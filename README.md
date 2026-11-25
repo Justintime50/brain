@@ -63,7 +63,7 @@ Every standing rule in one line, linked to its full rule. The full rule wins if 
 - **Code style lives in the styles repo.** [Code style](#code-style)
 - **Previews run on the dev VM,** never on localhost. [Machines](#machines)
 - **Nothing goes out as the owner without approval.** Slack and email are drafts; GitHub posts use the owner's words or get their OK. [Other standing rules](#other-standing-rules)
-- **Tickets are read-only unless the owner asks.** Any ticket a bot touches is assigned to the owner, placed in the current active sprint and read back to confirm. [Other standing rules](#other-standing-rules), [ticket-implement](#ticket-implement)
+- **Tickets are read-only unless the owner asks.** Any ticket a bot touches is assigned to the owner, placed in the current active sprint and read back to confirm, except Blocked tickets, which leave the sprint. [Other standing rules](#other-standing-rules), [ticket-implement](#ticket-implement)
 - **Hands off other people's work.** [Other standing rules](#other-standing-rules)
 - **No secrets** in notes or handoff files. [Other standing rules](#other-standing-rules)
 - **Destructive commands stay narrow,** and email goes to trash, never permanent deletion. [Other standing rules](#other-standing-rules)
@@ -390,6 +390,7 @@ The rule started as a link for every deliverable from any bot and was narrowed t
 - Every bot cites the source for each fact it reports: file and line, URL, commit sha, or command output.
 - Orchestrator gets unsourced claims verified before passing them to you.
 - Always `git pull` a repo before investigating it or answering how it behaves. When docs and code disagree, the docs should match the code.
+- Re-check every claim about current state (recaps, nudges, open questions, leftovers) live in the same run before sending it. Never repeat an earlier run's claim unchecked.
 - Say what was verified and what is inferred. Never invent facts.
 
 ## When to use Adversarial Reviewer
@@ -432,6 +433,7 @@ The loop is in the [pr-review-loop](#pr-review-loop) skill below.
 - **Put the ticket key in the PR title** (and preferably the commit) so the tracker links it. Keep the Conventional Commit type first and put the key at the end, as in the [styles README](https://github.com/Justintime50/styles). The title is enough; don't add empty "link ticket" commits.
 - **Releases.** Tagging, publishing and marking a PR ready all need your explicit go-ahead. If a publish fails, stop and report; don't rerun it. An approval covers only what it names. A deploy being confirmed isn't release approval, and an OK for one batch or date doesn't cover others.
 - **Prefer API reads over clones.** For lookups, prefer `gh api` and `gh pr view` over cloning. Temporary clones go in a temp folder.
+- **Wait on CI only when needed, with one blocking call.** When a bot must wait for a PR's checks, it runs a single `gh pr checks <number> --watch --fail-fast --interval 30` instead of a polling loop. Once GitHub event streaming is available on the account, `gh event listen` replaces it.
 - **Use a repo's justfile targets** for build, lint and tests when it has them; they install the right toolchain (for example the required Node version).
 
 ## Code style
@@ -442,7 +444,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 
 - **Nothing goes out as you without your approval.** Slack messages and email are drafts until you OK them. When you ask for a post, the bot writes it in your own voice, using your earlier messages as examples.
 - **Slack and email summaries.** Summaries assume you haven't read the thread. They cover the asks, who's asking, deadlines, priorities and next steps, and call out what you owe. Summarize instead of quoting. Imported files go in verbatim. When triaging, flag any trashed thread that still holds real work.
-- **Tickets are read-only** unless you ask.
+- **Tickets are read-only** unless you ask. A ticket that can't be finished because of unfinished outside work gets a comment explaining why with links to the blockers, moves to Blocked and leaves the current sprint, and any partial changes for it come out of the draft PR. Blocked tickets you unassign stay unassigned and out of the sprint, and ticket hygiene checks don't flag or reassign them.
 - **Hands off other people's work.** Bots never touch, edit, comment on or message about anyone else's PRs, branches, tickets or docs unless you explicitly ask. Follow-up work that belongs to other teams goes on an outstanding list you hand to the owning teams once your own changes are done, not into bot PRs.
 - **Email is never permanently deleted.** "Delete" means moving whole threads to trash, which is restorable.
 - **Ask before changing your dotfiles** on any machine. Edits are fine once you've approved the specific change.
