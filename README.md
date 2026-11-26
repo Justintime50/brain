@@ -78,7 +78,7 @@ Every standing rule in one line, linked to its full rule. The full rule wins if 
 - **A 🚀 reaction means do it.** [Other standing rules](#other-standing-rules)
 - **Vault writes use a sha guard.** Shared index pages and `AGENTS.md` go through Historian. [Vault layout](#vault-layout)
 - **Plans move draft, needs-review, approved, then built on the owner's go, then done.** [How a plan moves](#how-a-plan-moves)
-- **Routines run weekdays in working hours,** use event triggers over polling, and stay quiet when nothing's new. [Routines worth copying](#routines-worth-copying)
+- **Routines run weekdays in working hours,** unless an account's private doc moves those hours (for example to evenings and weekends); they use event triggers over polling, and stay quiet when nothing's new. [Routines worth copying](#routines-worth-copying)
 - **One rolling PR per README.** Mid-week refinements go in daily, and the Monday audit compares this index against memory in both directions. [Rolling README PRs](#rolling-readme-prs)
 
 ## Results
@@ -604,7 +604,7 @@ Each routine's prompt in the [routine reference](#routine-reference) is the back
 Cadence rules first, because they matter more than any single routine:
 
 - Only work that would block your day runs hourly or faster. Everything else runs once a day at most, or once a week when that's enough.
-- Weekdays only, during working hours. Nothing runs after 5 PM; it waits for the next workday.
+- Weekdays only, during working hours. Nothing runs after 5 PM; it waits for the next workday. An account's [private brain doc](#private-brain-docs) can move these hours, for example to evenings and weekends.
 - **No blind polling.** Use an event trigger (a GitHub PR event or a Slack message) wherever one exists.
 - **Weekly is the default for upkeep.** Housekeeping routines, such as session summaries, run weekly unless you need them fresher. Daily is for things you read daily, such as the recap and the morning nudge.
 - **Don't add a routine just to poll or alert on usage;** it would use usage itself. A cheap weekly snapshot log is fine.
