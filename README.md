@@ -80,6 +80,7 @@ Every standing rule in one line, linked to its full rule. The full rule wins if 
 - **Plans move draft, needs-review, approved, then built on the owner's go, then done.** [How a plan moves](#how-a-plan-moves)
 - **Routines run weekdays in working hours,** unless an account's private doc moves those hours (for example to evenings and weekends); they use event triggers over polling, and stay quiet when nothing's new. [Routines worth copying](#routines-worth-copying)
 - **One rolling PR per README.** Mid-week refinements go in daily, and the Monday audit compares this index against memory in both directions. [Rolling README PRs](#rolling-readme-prs)
+- **Postpone a bot team sync** while any brain or styles PR is open; tell the owner and re-check daily. [Rolling README PRs](#rolling-readme-prs)
 
 ## Results
 
@@ -642,6 +643,7 @@ The brain README and the styles README stay current through one rolling PR each,
 - **Friday brain and styles PRs ready.** Fridays around 3:15 PM, after that day's updates, the coordinator marks both rolling PRs ready for review and tells the owner. The owner reviews and merges.
 - **Weekly brain memory audit.** Weekdays around 9 AM, the coordinator checks once a week that local memory matches the README on the default branch. It compares the whole [Core rules index](#core-rules-index) on the default branch against each bot's memory copy in both directions: index lines missing or worded differently in memory get rewritten from the default branch, and rules in memory that the index doesn't carry get flagged for the rolling PR. It doesn't stop at checking for contradictions. The audit runs on Monday when last week's rolling PR is already merged; if that PR is still open, the coordinator tells the owner the audit is waiting and runs it on the first weekday morning after the merge. After a completed audit, the coordinator reports what drifted and what was fixed, or one line that everything matches.
 - **Monday brain and styles refresh.** Every bot pulls the latest brain and styles default branches into its own local memory each Monday around 9:15 AM, alongside the coordinator's weekly audit, so its rules match the merged READMEs. Each bot replaces its core rules memory file with the default branch's [Core rules index](#core-rules-index) word for word. Bots only pull down; syncing changes back up to brain and styles through the rolling PRs is the coordinator's job alone.
+- **Postpone a bot team sync while a brain or styles PR is open.** If any brain or styles PR is open when a bot team sync is due, the coordinator tells the owner and postpones the sync, then re-checks daily until none are open. Added 2026-11-26.
 - **Several accounts, one PR each.** Every Grok Bot account the owner runs (for example work and personal) contributes to the same rolling brain and styles PRs. Each pulls the latest head first, adds its commits on top, and never opens a second rolling PR. Where accounts are set up differently, the README describes both instead of overwriting one with the other.
 
 ### Routine reference
