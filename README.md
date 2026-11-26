@@ -6,7 +6,7 @@ The brAIn for my bot team.
 
 Setting up a team of AI bots in Grok Bot roughly tripled my velocity and deliverables (pull requests and commits) compared with the 12 weeks before (little AI automation), and raised them 1.4–1.7x against the 4 weeks just before (attempts at AI automation), without sacrificing quality. In my first 20 days with the team, I opened about 3x as many pull requests per week as in the 12 weeks before (31.5 vs 10.0), made about 3x as many default-branch commits (37.8 vs 11.6) and merged 2.8x as many PRs (26.9 vs 9.7). Against the 4 weeks before, which is the closer comparison, I opened 62% more PRs, merged 42% more and made 72% more commits. I also reviewed more of other people's PRs, worked in more repos each week, and my PRs merged faster, in a median of 1.2 hours. More code delivery without an increase in Sentry errors or rollbacks - the process backs it up: bots never merge, every PR goes through my review, and Adversarial Reviewer checks larger changes first. The numbers and how they were measured are in [Results](#results). [How velocity tripled](#how-velocity-tripled) explains why.
 
-The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, and a historian that keeps the notes vault and the accomplishments log.
+The team is one coordinator bot I talk to, a few engineer bots that each own an area, and a handful of cross-cutting helpers: a reviewer, a researcher, and a historian that keeps the notes vault and, on accounts that use it, the accomplishments log.
 
 This README does three jobs at once:
 
@@ -227,9 +227,9 @@ You talk to one bot, the **Orchestrator**. It answers quick asks itself, hands a
 | Platform Engineer | Engineer | Every other project repo that isn't one of the lanes above. |
 | Adversarial Reviewer | Cross-cutting | Reviews bot-written code and plans before you see them. Never rewrites, approves or merges. |
 | Researcher | Cross-cutting | Read-only cross-system lookups, answered with sources. Any bot can send it work; in practice the coordinator sends nearly all of it. Its value is in what it finds. |
-| Historian | Cross-cutting | Keeper of the notes vault: shared index pages, the vault's rules file, git sync, a daily audit, and weekly session summaries. Also the accomplishments log: a daily update, a velocity report every four weeks, and a weekly usage snapshot. |
+| Historian | Cross-cutting | Keeper of the notes vault: shared index pages, the vault's rules file, git sync, a daily audit, and weekly session summaries. Also the accomplishments log: a daily update, a velocity report every four weeks, and a weekly usage snapshot. An account may run Historian vault-only, without the accomplishments log; see [Account-specific setup](#account-specific-setup). |
 
-Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one keeper for the notes vault and the accomplishments log.
+Rename the engineer lanes to match your own work. The pattern matters more than the names: one coordinator, one owner per area, one reviewer, one reader, and one keeper for the notes vault and, on accounts that use it, the accomplishments log.
 
 **When to add a bot or split a lane.** Start with the smallest useful roster. Add a bot only when the work has a stable specialist role: its own goal or area, tools and sources, approval boundary or schedule. Split a sub-area into its own owner only once it has its own rules and schedule, or its own steady stream of work. Until then a second bot mostly duplicates memory and adds hops.
 
@@ -348,6 +348,8 @@ How I work:
 ```text
 I'm Historian, {owner}'s keeper of the book. I keep their accomplishments notes up to date: an overview, a note per year, stats by role, a velocity report every four weeks, and a weekly usage snapshot. I also own their notes vault: I own the shared index pages and the vault's rules file, file the bots' weekly summaries, keep the vault's git sync healthy, and run a daily vault audit, since other bots write their own notes directly. Every weekday afternoon I pull the day's work myself from the ticket tracker and GitHub, link PRs to their tickets, write the accomplishments notes myself with a sha guard, and send Orchestrator the day's deliverables for its recap. Ask me for daily, weekly or past summaries of what {owner} got done.
 ```
+
+An account may run Historian vault-only, without the accomplishments log or its daily and weekly stats work; see [Account-specific setup](#account-specific-setup).
 
 Historian's counting rules: authored PRs count in the month they merged, and reviewed PRs once, in the month of your first review. Comment-only reviews don't count, and nothing counts in two months. One note per year. Leave PRs that can't be matched to a ticket as they are, without asking. For one-off summaries, read the notes instead of asking other bots.
 
@@ -1009,9 +1011,9 @@ Current as of 2026-11-18. Running today.
 
 ### Personal account
 
-Not set up yet. This is the plan.
+Current as of 2026-11-26. Running today. Account-specific details live in the account's [private brain doc](#private-brain-docs).
 
-- **Bots:** the team from [Team structure](#team-structure), trimmed to what personal work needs: Orchestrator, one engineer bot per personal area (for example open-source projects, and the dev environment), Adversarial Reviewer, Researcher, and Historian for a personal vault and an accomplishments log.
+- **Bots:** the team from [Team structure](#team-structure), trimmed to what personal work needs: Orchestrator, one engineer bot per personal area (for example open-source projects, and the dev environment), Adversarial Reviewer, Researcher, and Historian. Historian is vault-only: it keeps the personal vault and does not keep an accomplishments log.
 - **Connectors:** GitHub, personal Gmail, and personal Google Drive and Google Docs. Add Slack or an issue tracker only if personal work uses them. Lock down tools as in [Connectors to set up](#connectors-to-set-up).
 - **Machines:** a personal computer registered with the app, holding `gh`, git over SSH, personal repos and the personal vault.
 - **Setup:** follow [Step-by-step setup](#step-by-step-setup). Start with fewer routines and add them as you need them.
