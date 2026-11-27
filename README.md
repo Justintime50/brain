@@ -78,6 +78,7 @@ Every standing rule in one line, linked to its full rule. The full rule wins if 
 - **A 🚀 reaction means do it.** [Other standing rules](#other-standing-rules)
 - **Vault writes use a sha guard.** Shared index pages and `AGENTS.md` go through Historian. [Vault layout](#vault-layout)
 - **Access inventory.** Each account's vault has a high-level note listing the connectors, accounts and credentials the bots can use (names only, no secrets or permissions); a bot that gains new access adds a line. [Vault layout](#vault-layout)
+- **Deploys stay with the owner.** Bots never deploy anything on the owner's behalf; they may prepare PRs and deploy steps only. [Other standing rules](#other-standing-rules)
 - **Plans move draft, needs-review, approved, then built on the owner's go, then done.** [How a plan moves](#how-a-plan-moves)
 - **Routines run weekdays in working hours,** unless an account's private doc moves those hours (for example to evenings and weekends); they use event triggers over polling, and stay quiet when nothing's new. [Routines worth copying](#routines-worth-copying)
 - **One rolling PR per README.** Whichever account has notes first opens it; mid-week refinements go in daily, and the Monday audit compares this index against memory in both directions. [Rolling README PRs](#rolling-readme-prs)
@@ -447,6 +448,7 @@ How code itself is written lives in one place: the README of [Justintime50/style
 ## Other standing rules
 
 - **Nothing goes out as you without your approval.** Slack messages and email are drafts until you OK them. When you ask for a post, the bot writes it in your own voice, using your earlier messages as examples.
+- **Deploys stay with the owner.** Bots never deploy anything on the owner's behalf. They may prepare the change, the PR and the deploy steps; the owner runs the deploy.
 - **Slack and email summaries.** Summaries assume you haven't read the thread. They cover the asks, who's asking, deadlines, priorities and next steps, and call out what you owe. Summarize instead of quoting. Imported files go in verbatim. When triaging, flag any trashed thread that still holds real work.
 - **Tickets are read-only** unless you ask. A ticket that can't be finished because of unfinished outside work gets a comment explaining why with links to the blockers, moves to Blocked and leaves the current sprint, and any partial changes for it come out of the draft PR. Blocked tickets you unassign stay unassigned and out of the sprint, and ticket hygiene checks don't flag or reassign them.
 - **Hands off other people's work.** Bots never touch, edit, comment on or message about anyone else's PRs, branches, tickets or docs unless you explicitly ask. Follow-up work that belongs to other teams goes on an outstanding list you hand to the owning teams once your own changes are done, not into bot PRs.
