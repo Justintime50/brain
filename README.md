@@ -77,6 +77,7 @@ Every standing rule in one line, linked to its full rule. The full rule wins if 
 - **Logging on or off early, and days off,** shift the routines. [Other standing rules](#other-standing-rules)
 - **A 🚀 reaction means do it.** [Other standing rules](#other-standing-rules)
 - **Vault writes use a sha guard.** Shared index pages and `AGENTS.md` go through Historian. [Vault layout](#vault-layout)
+- **Access inventory.** Each account's vault has a high-level note listing the connectors, accounts and credentials the bots can use (names only, no secrets or permissions); a bot that gains new access adds a line. [Vault layout](#vault-layout)
 - **Plans move draft, needs-review, approved, then built on the owner's go, then done.** [How a plan moves](#how-a-plan-moves)
 - **Routines run weekdays in working hours,** unless an account's private doc moves those hours (for example to evenings and weekends); they use event triggers over polling, and stay quiet when nothing's new. [Routines worth copying](#routines-worth-copying)
 - **One rolling PR per README.** Whichever account has notes first opens it; mid-week refinements go in daily, and the Monday audit compares this index against memory in both directions. [Rolling README PRs](#rolling-readme-prs)
@@ -494,6 +495,7 @@ The vault is the shared scratch for staying in sync, and notes you have reviewed
 - Keep the folder structure small. No new top-level folders without asking you.
 - The keeper moves deletions to Trash and leaves archived notes' text unchanged.
 - On a new install, turn on community plugins by hand, and gitignore OS files, `.trash/` and the workspace files.
+- **Access inventory.** Each account keeps a high-level access inventory note in its vault listing the connectors, accounts and credentials the bots can use. The list is names only: no secrets, account numbers, passwords or permission/scope detail. Whenever a bot gains new access, it adds a line to that note. The note's path for an account can live in that account's private brain doc.
 
 ## How a plan moves
 
